@@ -1,0 +1,246 @@
+#!/bin/bash
+
+ARCH_GIT_REPOS=(packages community)
+
+OPT_ARCH=$(uname -m)
+OPT_FORCE=0
+: ${ASPROOT:=$HOME/asp}
+
+m4_include(remote.inc.sh)
+m4_include(package.inc.sh)
+
+log_meta() {
+  printf "$1 $2\n" "${@:3}"
+}
+
+log_error() {
+  log_meta 'error:' "$@" >&2
+}
+
+log_fatal() {
+  log_error "$@"
+  exit 1
+}
+
+log_warning() {
+  log_meta 'warning:' "$@" >&2
+}
+
+log_info() {
+  log_meta '==>' "$@"
+}
+
+map() {
+  local map_r=0
+  for _ in "${@:2}"; do
+    "$1" "$_" || (( $# > 255 ? map_r=1 : ++r ))
+  done
+  return $map_r
+}
+
+usage() {
+  cat<<EOF
+asp [OPTIONS...] {COMMAND} ...
+
+Manage build sources for Arch packages.
+
+Options:
+  -a           ARCH        Specify an architecture other than the host's
+  -f                       Allow files to be overwritten
+  -h                       Show this help
+  -V                       Show package version
+
+Commands:
+  difflog      NAME        Show revision history with diffs
+  export       NAME...     Export packages
+  gc                       Cleanup and optimize the local repository
+  disk-usage               Show amount of disk used by locally tracked packages
+  help                     Show this help
+  list-all                 List all known packages
+  list-arches  NAME...     List architectures for packages
+  list-local               List tracked packages
+  list-repos   NAME...     List repos for packages
+  log          NAME        Show revision history
+  shortlog     NAME        Show revision history in short form
+  update       [NAME...]   Update packages (update all tracked if none specified)
+EOF
+}
+
+version() {
+  printf 'asp v0\n'
+}
+
+update() {
+  local r
+
+  for r in "${ARCH_GIT_REPOS[@]}"; do
+    log_info "updating remote '%s'" "$r"
+    remote_update "$r"
+  done
+}
+
+update_packages() {
+  local refspecs=() remote pkgname
+  declare -A refspec_map
+
+  for pkgname; do
+    package_init -n "$pkgname" remote || return 1
+    refspec_map["$remote"]+=" packages/$pkgname"
+  done
+
+  for remote in "${!refspec_map[@]}"; do
+    read -ra refspecs <<<"${refspec_map["$remote"]}"
+    remote_update_refs "$remote" "${refspecs[@]}"
+  done
+}
+
+initialize() {
+  local remote
+
+  if [[ -d .git && OPT_FORCE -eq 0 ]]; then
+    log_fatal 'refusing to overwrite existing repo in %s' "$ASPROOT"
+  fi
+
+  git init --bare || return 1
+
+  for remote in "${ARCH_GIT_REPOS[@]}"; do
+    rm -rf "$remote"
+    git remote add "$remote" git://projects.archlinux.org/svntogit/"$remote".git
+  done
+
+  touch .asp
+}
+
+dump_packages() {
+  local remote refspecs dumpfn
+
+  case $1 in
+    all)
+      dumpfn=remote_get_all_refs
+      ;;
+    local)
+      dumpfn=remote_get_tracked_refs
+      ;;
+  esac
+
+  for remote in "${ARCH_GIT_REPOS[@]}"; do
+    "$dumpfn" "$remote" refspecs
+    if [[ $refspecs ]]; then
+      printf '%s\n' "${refspecs[@]/#packages/"$remote"}"
+    fi
+  done
+}
+
+list_local() {
+  dump_packages 'local'
+}
+
+list_all() {
+  dump_packages 'all'
+}
+
+shortlog() {
+  package_log "$@" "$FUNCNAME"
+}
+
+log() {
+  package_log "$@" "$FUNCNAME"
+}
+
+difflog() {
+  package_log "$@" "$FUNCNAME"
+}
+
+gc() {
+  git prune
+  git gc
+}
+
+disk_usage() {
+  local usage
+  read usage _ < <(du -sh "$ASPROOT/objects")
+
+  log_info 'Using %s on disk.' "$usage"
+}
+
+umask 0022
+startdir=$PWD
+cd "$ASPROOT" || log_fatal "ASPROOT ($ASPROOT) does not exist!"
+[[ -f .asp ]] || initialize
+
+while getopts ':a:fhV' flag; do
+  case $flag in
+    a)
+      OPT_ARCH=$OPTARG
+      ;;
+    f)
+      OPT_FORCE=1
+      ;;
+    h)
+      usage
+      exit 0
+      ;;
+    V)
+      version
+      exit 0
+      ;;
+    \?)
+      log_fatal "invalid option -- '%s'" "$OPTARG"
+      ;;
+    :)
+      log_fatal "option '-%s' requires an argument" "$OPTARG"
+      ;;
+  esac
+done
+shift $(( OPTIND - 1 ))
+
+action=$1
+shift
+
+case $action in
+  update)
+    if (( $# == 0 )); then
+      update
+    else
+      update_packages "$@"
+    fi
+    ;;
+  list-repos)
+    map package_get_repos "$@"
+    ;;
+  list-arches)
+    map package_get_arches "$@"
+    ;;
+  list-all)
+    list_all
+    ;;
+  list-local)
+    list_local
+    ;;
+  export)
+    map package_export "$@"
+    ;;
+  shortlog)
+    shortlog "$1"
+    ;;
+  log)
+    log "$1"
+    ;;
+  difflog)
+    difflog "$1"
+    ;;
+  disk-usage)
+    disk_usage
+    ;;
+  gc)
+    gc
+    ;;
+  help)
+    usage
+    exit 0
+    ;;
+  *)
+    log_fatal 'unknown action: %s' "$action"
+    ;;
+esac
+

@@ -1,0 +1,92 @@
+/////
+vim:set ts=4 sw=4 syntax=asciidoc noet:
+/////
+asp(1)
+======
+
+Name
+----
+asp - Manage Arch Linux build sources
+
+Synopsis
+--------
+asp [options] command [targets...]
+
+Description
+-----------
+Manage the version-controlled sources for the build scripts used to create Arch
+Linux packages. This program provides a thin wrapper over the svntogit
+repositories hosted at http://projects.archlinux.org. It aims to provide a
+replacement for abs which favors a sparse checkout.
+
+Commands
+--------
+The following commands are understood:
+
+*difflog*::
+	Show the full revision history of the target, with file diffs.
+
+*export*::
+	Dump the build source files for each target into a directory of the
+	target's name in $PWD. Targets can be specified simply as 'package' to
+	check out the source files at HEAD, or in 'repository/package' format
+	to checkout the source files which were used to push the 'package' which
+	exists in 'repository'.
+
+*gc*::
+	Perform housekeeping procedures on the local repo, optimizing and
+	compacting the repo to free disk space.
+
+*disk-usage*::
+	Report the approximate disk usage for locally tracked packages.
+
+*help*::
+	Display the command line usage and exit.
+
+*list-all*::
+	List all known packages in the repositories.
+
+*list-arches*::
+	List the architectures the given targets are available for.
+
+*list-local*::
+	List all packages which are tracked locally.
+
+*list-repos*::
+	List the repositories the given targets exist in.
+
+*log*::
+	Show the revision history of the target.
+
+*shortlog*::
+	Show a condensed revision history of the target.
+
+*update*::
+	For each target, if the package is not known to the local repository,
+	attempt to track it. If the package is tracked, update the package
+	to the newest version. If no targets are provided, all locally known
+	packages will be updated.
+
+Options
+-------
+*-a* 'architecture'::
+	When relevant, specify an architecture other than that of the current host.
+
+*-f*::
+	Allow files to be overwritten.
+
+*-h*::
+	Print a short help text and exit.
+
+*-V*::
+	Print a short version string and exit.
+
+Environment
+-----------
+*ASPROOT*::
+	Determines where the metadata is stored for locally tracked packages. Defaults
+	to '$HOME/asp'.
+
+Authors
+-------
+Dave Reisner <d@falconindy.com>

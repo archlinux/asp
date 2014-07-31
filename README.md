@@ -8,9 +8,9 @@ full checkout (for whatever reason that may be).
 
 # Setup
 
-None! Though, it should be noted that the **ASPROOT** environment variable
-will control where `asp` keeps its locally tracked packages. By default, this
-is `$HOME/asp`.
+None! Though, it should be noted that the `ASPROOT` environment variable
+will control where `asp` keeps its local git repo. By default, this is
+`$HOME/asp`.
 
 # Examples
 

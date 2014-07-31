@@ -35,8 +35,9 @@ clean:
 	$(RM) $(BINPROGS) $(MANPAGES)
 
 install: all
-	install -dm755 $(DESTDIR)$(PREFIX)/bin
+	install -dm755 $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(PREFIX)/share/man/man1
 	install -m755 $(BINPROGS) $(DESTDIR)$(PREFIX)/bin
+	install -m644 $(MANPAGES) $(DESTDIR)$(PREFIX)/share/man/man1
 
 dist:
 	git archive --format=tar --prefix=$(PACKAGE_NAME)-$(VER)/ v$(VER) | gzip -9 > $(PACKAGE_NAME)-$(VER).tar.gz

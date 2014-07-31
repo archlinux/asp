@@ -26,7 +26,7 @@ edit = $(V_GEN) m4 -P $@.in >$@ && chmod go-w,+x $@
 
 doc: $(MANPAGES)
 man/%: man/%.txt Makefile
-	a2x -d manpage \
+	$(V_GEN) a2x -d manpage \
 		-f manpage \
 		-a manversion=$(VERSION) \
 		-a manmanual="$(PACKAGE_NAME) manual" $<

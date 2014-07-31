@@ -167,7 +167,7 @@ untrack() {
 
 disk_usage() {
   local usage
-  read usage _ < <(du -sh "$ASPROOT/objects")
+  read usage _ < <(du -sh "$ASPROOT")
 
   log_info 'Using %s on disk.' "$usage"
 }

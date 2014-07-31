@@ -38,10 +38,6 @@ install: all
 	install -dm755 $(DESTDIR)$(PREFIX)/bin
 	install -m755 $(BINPROGS) $(DESTDIR)$(PREFIX)/bin
 
-uninstall:
-	for f in $(BINPROGS); do $(RM) $(DESTDIR)$(PREFIX)/bin/$$f; done
-	$(RM) $(DESTDIR)$(PREFIX)/share/zsh/site-functions/_archinstallscripts
-
 dist:
 	git archive --format=tar --prefix=$(PACKAGE_NAME)-$(VER)/ v$(VER) | gzip -9 > $(PACKAGE_NAME)-$(VER).tar.gz
 	gpg --detach-sign --use-agent $(PACKAGE_NAME)-$(VER).tar.gz

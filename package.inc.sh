@@ -67,7 +67,6 @@ package_export() {
 
   # support $repo/$pkgname syntax
   if [[ $repo ]]; then
-    # TODO: add an --arch flag
     subtree=repos/$repo-$OPT_ARCH
   else
     subtree=trunk

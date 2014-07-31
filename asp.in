@@ -63,6 +63,7 @@ Commands:
   log          NAME        Show revision history
   shortlog     NAME        Show revision history in short form
   update       [NAME...]   Update packages (update all tracked if none specified)
+  untrack      NAME...     Remove a package from the local repository
 EOF
 }
 
@@ -156,6 +157,14 @@ gc() {
   git gc
 }
 
+untrack() {
+  local pkgname=$1 remote
+
+  package_init -n "$pkgname" remote || return 1
+
+  remote_untrack "$remote" "$pkgname"
+}
+
 disk_usage() {
   local usage
   read usage _ < <(du -sh "$ASPROOT/objects")
@@ -234,6 +243,9 @@ case $action in
     ;;
   gc)
     gc
+    ;;
+  untrack)
+    map untrack "$@"
     ;;
   help)
     usage

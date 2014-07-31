@@ -67,6 +67,11 @@ The following commands are understood:
 	to the newest version. If no targets are provided, all locally known
 	packages will be updated.
 
+*untrack*::
+	Remove a remote tracking branch from the local repository. Disk usage for
+	the removed package(s) may not be freed until garbage collection has taken
+	place.
+
 Options
 -------
 *-a* 'architecture'::

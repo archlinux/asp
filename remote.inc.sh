@@ -48,3 +48,9 @@ remote_get_url() {
 
   git ls-remote --get-url "$remote"
 }
+
+remote_untrack() {
+  local remote=$1 pkgname=$2
+
+  git branch -dr "$remote/packages/$pkgname"
+}

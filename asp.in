@@ -251,6 +251,9 @@ case $action in
     usage
     exit 0
     ;;
+  '')
+    log_fatal 'no action specified (use -h for help)'
+    ;;
   *)
     log_fatal 'unknown action: %s' "$action"
     ;;

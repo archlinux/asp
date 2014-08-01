@@ -23,12 +23,20 @@ Commands
 --------
 The following commands are understood:
 
+*checkout*::
+	Create a new git repository containing the full source and history
+	for each of the given targets. The new repository will pull from the
+	repository in '$ASPROOT' and must be updated separately after using
+	'abs update'. If a checkout occurs on the same filesystem as '$ASPROOT',
+	most of the metadata can be hard linked, making this a relatively cheap
+	copy.
+
 *difflog*::
 	Show the full revision history of the target, with file diffs.
 
 *export*::
 	Dump the build source files for each target into a directory of the
-	target's name in $PWD. Targets can be specified simply as 'package' to
+	target's name in '$PWD'. Targets can be specified simply as 'package' to
 	check out the source files at HEAD, or in 'repository/package' format
 	to checkout the source files which were used to push the 'package' which
 	exists in 'repository'.

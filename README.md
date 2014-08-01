@@ -20,6 +20,12 @@ Get the source files for some packages:
 asp export pacman testing/systemd extra/pkgfile
 ~~~
 
+Get a fully functional git checkout of a single package:
+
+~~~
+asp checkout pkgfile
+~~~
+
 List the repositories a package has been pushed to:
 
 ~~~

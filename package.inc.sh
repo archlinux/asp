@@ -91,6 +91,19 @@ package_export() {
       bsdtar -C "$startdir" -s ",^$subtree/,$pkgname/," -xf - "$subtree/"
 }
 
+package_checkout() {
+  local pkgname=$1 remote
+
+  package_init "$pkgname" remote || return 1
+
+  # create a local tracking branch to clone from. ignore errors because
+  # it might already exist.
+  git branch "$remote/packages/$pkgname" "$remote/packages/$pkgname" 2>/dev/null
+
+  git clone "$ASPROOT" --single-branch --branch "$remote/packages/$pkgname" \
+    "$startdir/$pkgname"
+}
+
 package_get_repos_with_arch() {
   local pkgname=$1 remote=$2
   local objtype path arch repo

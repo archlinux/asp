@@ -71,7 +71,7 @@ version() {
   printf 'asp v0\n'
 }
 
-update() {
+update_all() {
   local r
 
   for r in "${ARCH_GIT_REPOS[@]}"; do
@@ -84,11 +84,13 @@ update_packages() {
   local refspecs=() remote pkgname
   declare -A refspec_map
 
+  # map packages to remotes
   for pkgname; do
     package_init -n "$pkgname" remote || return 1
     refspec_map["$remote"]+=" packages/$pkgname"
   done
 
+  # update each remote all at once
   for remote in "${!refspec_map[@]}"; do
     read -ra refspecs <<<"${refspec_map["$remote"]}"
     remote_update_refs "$remote" "${refspecs[@]}"
@@ -118,7 +120,6 @@ initialize() {
   git init || return 1
 
   for remote in "${ARCH_GIT_REPOS[@]}"; do
-    rm -rf "$remote"
     git remote add "$remote" git://projects.archlinux.org/svntogit/"$remote".git
   done
 
@@ -222,7 +223,7 @@ shift
 case $action in
   update)
     if (( $# == 0 )); then
-      update
+      update_all
     else
       update_packages "$@"
     fi

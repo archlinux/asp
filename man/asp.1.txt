@@ -27,7 +27,7 @@ The following commands are understood:
 	Create a new git repository containing the full source and history
 	for each of the given targets. The new repository will pull from the
 	repository in '$ASPROOT' and must be updated separately after using
-	'abs update'. If a checkout occurs on the same filesystem as '$ASPROOT',
+	'asp update'. If a checkout occurs on the same filesystem as '$ASPROOT',
 	most of the metadata can be hard linked, making this a relatively cheap
 	copy.
 

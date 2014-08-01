@@ -95,14 +95,27 @@ update_packages() {
   done
 }
 
+migrate_bare_repo() {
+  files=(branches hooks info objects logs refs config description
+         {FETCH_,}HEAD)
+
+  { # figure out when to get rid of this
+    git config 'core.bare' 'false'
+    mkdir .git
+    mv "${files[@]}" .git
+  } 2>/dev/null
+}
+
 initialize() {
   local remote
 
-  if [[ -d .git && OPT_FORCE -eq 0 ]]; then
-    log_fatal 'refusing to overwrite existing repo in %s' "$ASPROOT"
+  if [[ -s config && $(git config core.bare) = 'true' ]]; then
+    migrate_bare_repo
   fi
 
-  git init --bare || return 1
+  [[ -f .asp ]] && return 0
+
+  git init || return 1
 
   for remote in "${ARCH_GIT_REPOS[@]}"; do
     rm -rf "$remote"
@@ -175,7 +188,7 @@ disk_usage() {
 umask 0022
 startdir=$PWD
 cd "$ASPROOT" || log_fatal "ASPROOT ($ASPROOT) does not exist!"
-[[ -f .asp ]] || initialize
+initialize
 
 while getopts ':a:fhV' flag; do
   case $flag in

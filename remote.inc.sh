@@ -14,7 +14,7 @@ remote_has_package() {
 remote_is_tracking() {
   local repo=$1 pkgname=$2
 
-  git rev-parse "$repo/packages/$pkgname" &>/dev/null
+  git show-ref -q "$repo/packages/$pkgname"
 }
 
 remote_get_tracked_refs() {

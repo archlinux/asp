@@ -8,7 +8,7 @@ remote_get_all_refs() {
 remote_has_package() {
   local remote=$1 pkgname=$2
 
-  [[ $(git ls-remote "$remote" "$pkgname") ]]
+  git ls-remote --heads --exit-code "$remote" "$pkgname" &>/dev/null
 }
 
 remote_is_tracking() {

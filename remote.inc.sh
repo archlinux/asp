@@ -1,14 +1,22 @@
+declare -A refcache=()
+
 remote_get_all_refs() {
   local remote=$1
 
-  mapfile -t "$2" < <(git ls-remote "$remote" 'refs/heads/packages/*' |
-      awk '{ sub(/refs\/heads\//, "", $2); print $2 }')
+  if [[ -z ${refcache["$remote"]} ]]; then
+    refcache["$remote"]=$(git ls-remote "$remote" 'refs/heads/packages/*' |
+        awk '{ sub(/refs\/heads\//, "", $2); print $2 }')
+  fi
+
+  mapfile -t "$2" <<<"${refcache["$remote"]}"
 }
 
 remote_has_package() {
-  local remote=$1 pkgname=$2
+  local remote=$1 pkgname=$2 refs
 
-  git ls-remote --heads --exit-code "$remote" "$pkgname" &>/dev/null
+  remote_get_all_refs "$remote" refs
+
+  in_array "$remote/$pkgname" "${refs[@]}"
 }
 
 remote_is_tracking() {

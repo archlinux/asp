@@ -3,7 +3,7 @@ declare -A refcache=()
 remote_get_all_refs() {
   local remote=$1
 
-  if [[ -z ${refcache["$remote"]} ]]; then
+  if [[ -z ${refcache["$remote"]+cached} ]]; then
     refcache["$remote"]=$(git ls-remote "$remote" 'refs/heads/packages/*' |
         awk '{ sub(/refs\/heads\//, "", $2); print $2 }')
   fi

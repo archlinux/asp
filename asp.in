@@ -6,37 +6,9 @@ OPT_ARCH=$(uname -m)
 OPT_FORCE=0
 : ${ASPROOT:=$HOME/asp}
 
+m4_include(util.inc.sh)
 m4_include(remote.inc.sh)
 m4_include(package.inc.sh)
-
-log_meta() {
-  printf "$1 $2\n" "${@:3}"
-}
-
-log_error() {
-  log_meta 'error:' "$@" >&2
-}
-
-log_fatal() {
-  log_error "$@"
-  exit 1
-}
-
-log_warning() {
-  log_meta 'warning:' "$@" >&2
-}
-
-log_info() {
-  log_meta '==>' "$@"
-}
-
-map() {
-  local map_r=0
-  for _ in "${@:2}"; do
-    "$1" "$_" || (( $# > 255 ? map_r=1 : ++r ))
-  done
-  return $map_r
-}
 
 usage() {
   cat<<EOF

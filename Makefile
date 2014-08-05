@@ -11,7 +11,8 @@ MANPAGES = \
 
 INCLUDES = \
 	package.inc.sh \
-	remote.inc.sh
+	remote.inc.sh \
+	util.inc.sh
 
 all: $(BINPROGS) $(MANPAGES)
 

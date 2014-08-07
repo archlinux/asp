@@ -23,6 +23,7 @@ Options:
   -V                       Show package version
 
 Commands:
+  checkout     NAME...     Create a mutable git repository for packages
   difflog      NAME        Show revision history with diffs
   export       NAME...     Export packages
   gc                       Cleanup and optimize the local repository

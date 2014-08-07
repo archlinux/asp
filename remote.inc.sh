@@ -16,7 +16,7 @@ remote_has_package() {
 
   remote_get_all_refs "$remote" refs
 
-  in_array "$remote/$pkgname" "${refs[@]}"
+  in_array "packages/$pkgname" "${refs[@]}"
 }
 
 remote_is_tracking() {

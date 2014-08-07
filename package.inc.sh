@@ -72,7 +72,7 @@ package_export() {
     subtree=trunk
   fi
 
-  if [[ -z $(git ls-tree "$remote/packages/$pkgname" "$subtree/") ]]; then
+  if [[ -z $(git ls-tree "remotes/$remote/packages/$pkgname" "$subtree/") ]]; then
     if [[ $repo ]]; then
       log_error "package '%s' not found in repo '%s-%s'" "$pkgname" "$repo" "$OPT_ARCH"
       return 1
@@ -87,7 +87,7 @@ package_export() {
   fi
 
   log_info 'exporting %s:%s' "$pkgname" "$subtree"
-  git archive --format=tar "$remote/packages/$pkgname" "$subtree/" |
+  git archive --format=tar "remotes/$remote/packages/$pkgname" "$subtree/" |
       bsdtar -C "$startdir" -s ",^$subtree/,$pkgname/," -xf - "$subtree/"
 }
 

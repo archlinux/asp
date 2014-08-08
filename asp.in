@@ -109,6 +109,9 @@ dump_packages() {
     local)
       dumpfn=remote_get_tracked_refs
       ;;
+    *)
+      die 'internal error: invalid dump type: "%s"' "$1"
+      ;;
   esac
 
   for remote in "${ARCH_GIT_REPOS[@]}"; do

@@ -45,7 +45,6 @@ remote_update() {
   remote_get_tracked_refs "$remote" refspecs
 
   # refuse to update everything
-  # TODO: allow this with a flag
   [[ -z $refspecs ]] && return 0
 
   remote_update_refs "$remote" "${refspecs[@]}"

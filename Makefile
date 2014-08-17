@@ -39,7 +39,8 @@ clean:
 	$(RM) $(BINPROGS) $(MANPAGES)
 
 install: all
-	install -Dm755 $(BINPROGS) $(DESTDIR)$(PREFIX)/bin
+	install -dm755 $(DESTDIR)$(PREFIX)/bin
+	install -m755 $(BINPROGS) $(DESTDIR)$(PREFIX)/bin
 	install -Dm644 $(MANPAGES) $(DESTDIR)$(PREFIX)/share/man/man1
 	install -Dm644 $(BASH_COMPLETION) $(DESTDIR)$(PREFIX)/share/bash-completion/completions/asp
 

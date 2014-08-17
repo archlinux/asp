@@ -1,0 +1,61 @@
+#!/bin/bash
+
+in_array() {
+  for _ in "${@:2}"; do
+    [[ $_ = "$1" ]] && return 0
+  done
+  return 1
+}
+
+_asp() {
+  local a= cur= prev= comps=
+
+  _get_comp_words_by_ref cur prev
+
+  # top level commands
+  local -A verbs=(
+    [ALL_PACKAGES]='checkout difflog export list-arches list-repos log shortlog'
+    [LOCAL_PACKAGES]='untrack update'
+    [NONE]='disk-usage gc help list-all'
+  )
+
+  # flags
+  local -A opts=(
+    [UNKNOWN]='-a'
+    [NONE]='-f -h -V'
+  )
+
+  if in_array "$prev" ${opts[UNKNOWN]}; then
+    return 0
+  fi
+
+  if [[ $cur = -* ]]; then
+    COMPREPLY=( $(compgen -W '${opts[*]}' -- "$cur") )
+    return 0
+  fi
+
+  for word in "${COMP_WORDS[@]}"; do
+    if in_array "$word" ${verbs[ALL_PACKAGES]}; then
+      a=$word
+      comps=$(\asp list-all | sed 's,.*/,,')
+      break
+    elif in_array "$word" ${verbs[LOCAL_PACKAGES]}; then
+      a=$word
+      comps=$(\asp list-local | sed 's,.*/,,')
+      break
+    elif in_array "$word" ${verbs[NONE]}; then
+      a=$word
+      break
+    fi
+  done
+
+  if [[ -z $a ]]; then
+    comps=${verbs[*]}
+  fi
+
+  if [[ $comps ]]; then
+    COMPREPLY=( $(compgen -W '$comps' -- "$cur") )
+  fi
+}
+
+complete -F _asp asp

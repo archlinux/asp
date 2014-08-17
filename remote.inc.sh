@@ -1,14 +1,37 @@
 declare -A refcache=()
 
+__remote_refcache_get() {
+  local remote=$1 ttl=3600 now= cachetime= cachefile=$ASPCACHE/remote-$remote
+
+  # miss
+  cachetime=$(stat -c %Y "$cachefile" 2>/dev/null) || return 1
+
+  printf -v now '%(%s)T' -1
+
+  # miss
+  (( now > (cachetime + ttl) )) && return 1
+
+  # hit
+  mapfile -t "$2" <"$cachefile"
+}
+
+__remote_refcache_update() {
+  local remote=$1 cachefile=$ASPCACHE/remote-$remote
+
+  trap "rm -f '$cachefile~'" RETURN
+
+  git ls-remote "$remote" 'refs/heads/packages/*' |
+      awk '{ sub(/refs\/heads\//, "", $2); print $2 }' >"$cachefile~" &&
+          mv "$cachefile"{~,}
+}
+
 remote_get_all_refs() {
   local remote=$1
 
-  if [[ -z ${refcache["$remote"]+cached} ]]; then
-    refcache["$remote"]=$(git ls-remote "$remote" 'refs/heads/packages/*' |
-        awk '{ sub(/refs\/heads\//, "", $2); print $2 }')
+  if ! __remote_refcache_get "$remote" "$2"; then
+    __remote_refcache_update "$remote"
+    __remote_refcache_get "$remote" "$2"
   fi
-
-  mapfile -t "$2" <<<"${refcache["$remote"]}"
 }
 
 remote_has_package() {

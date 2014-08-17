@@ -5,6 +5,7 @@ ARCH_GIT_REPOS=(packages community)
 OPT_ARCH=$(uname -m)
 OPT_FORCE=0
 : ${ASPROOT:=$HOME/asp}
+: ${ASPCACHE:=$ASPROOT/cache}
 
 m4_include(util.inc.sh)
 m4_include(remote.inc.sh)
@@ -87,6 +88,8 @@ initialize() {
   if [[ -s config && $(git config core.bare) = 'true' ]]; then
     migrate_bare_repo
   fi
+
+  [[ -d $ASPCACHE ]] || mkdir -p "$ASPCACHE"
 
   [[ -f .asp ]] && return 0
 

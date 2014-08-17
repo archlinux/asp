@@ -100,6 +100,10 @@ Environment
 	Determines where the metadata is stored for locally tracked packages. Defaults
 	to '$HOME/asp'.
 
+*ASPCACHE*::
+	Determines where cached data is stored. Defaults to '$ASPROOT/cache'. Data in
+	this directory can always be safely deleted.
+
 Authors
 -------
 Dave Reisner <d@falconindy.com>

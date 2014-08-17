@@ -22,7 +22,7 @@ log_info() {
 map() {
   local map_r=0
   for _ in "${@:2}"; do
-    "$1" "$_" || (( $# > 255 ? map_r=1 : ++r ))
+    "$1" "$_" || map_r=1
   done
   return $map_r
 }

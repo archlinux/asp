@@ -45,7 +45,7 @@ install: all
 	install -Dm644 $(BASH_COMPLETION) $(DESTDIR)$(PREFIX)/share/bash-completion/completions/asp
 
 dist:
-	git archive --format=tar --prefix=$(PACKAGE_NAME)-$(VER)/ v$(VER) | gzip -9 > $(PACKAGE_NAME)-$(VER).tar.gz
+	git archive --format=tar --prefix=$(PACKAGE_NAME)-$(VER)/ $(VER) | gzip -9 > $(PACKAGE_NAME)-$(VER).tar.gz
 	gpg --detach-sign --use-agent $(PACKAGE_NAME)-$(VER).tar.gz
 
 .PHONY: all clean install uninstall dist

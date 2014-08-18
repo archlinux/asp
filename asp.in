@@ -156,6 +156,7 @@ untrack() {
   package_init -n "$pkgname" remote || return 1
 
   remote_untrack "$remote" "$pkgname"
+  package_untrack "$pkgname" "$remote"
 }
 
 disk_usage() {

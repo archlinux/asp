@@ -141,6 +141,14 @@ package_get_repos() {
   printf '%s\n' "${!repos[@]}"
 }
 
+package_untrack() {
+  local pkgname=$1 remote=$2
+
+  if git show-ref -q "refs/heads/$remote/packages/$pkgname"; then
+    git branch -D "$remote/packages/$pkgname"
+  fi
+}
+
 _package_shortlog() {
   local pkgname=$1 remote=$2
 

@@ -82,5 +82,7 @@ remote_get_url() {
 remote_untrack() {
   local remote=$1 pkgname=$2
 
-  git branch -dr "$remote/packages/$pkgname"
+  if git show-ref -q "refs/remotes/$remote/packages/$pkgname"; then
+    git branch -dr "$remote/packages/$pkgname"
+  fi
 }

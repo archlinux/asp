@@ -48,11 +48,26 @@ package_find_remote() {
 }
 
 package_log() {
-  local pkgname=$1 method=$2 remote
+  local pkgname=$1 method=$2 logargs remote
 
   package_init "$pkgname" remote || return
 
-  "_package_$method" "$pkgname" "$remote"
+  case $method in
+    shortlog)
+      logargs=(--pretty=oneline)
+      ;;
+    difflog)
+      logargs=(-p)
+      ;;
+    log)
+      logargs=()
+      ;;
+    *)
+      die 'internal error: unknown log method: %s' "$method"
+      ;;
+  esac
+
+  git log "${logargs[@]}" "$remote/packages/$pkgname"
 }
 
 package_export() {
@@ -147,22 +162,4 @@ package_untrack() {
   if git show-ref -q "refs/heads/$remote/packages/$pkgname"; then
     git branch -D "$remote/packages/$pkgname"
   fi
-}
-
-_package_shortlog() {
-  local pkgname=$1 remote=$2
-
-  git log --pretty=oneline "$remote/packages/$pkgname"
-}
-
-_package_difflog() {
-  local pkgname=$1 remote=$2
-
-  git log -p "$remote/packages/$pkgname"
-}
-
-_package_log() {
-  local pkgname=$1 remote=$2
-
-  git log "$remote/packages/$pkgname"
 }

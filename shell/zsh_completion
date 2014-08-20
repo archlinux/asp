@@ -1,0 +1,46 @@
+#compdef asp
+
+_asp_command() {
+  local -a _asp_cmds
+  _asp_cmds=(
+      'checkout'
+      'difflog'
+      'export'
+      'gc'
+      'disk-usage'
+      'help'
+      'list-all'
+      'list-arches'
+      'list-local'
+      'list-repos'
+      'log'
+      'shortlog'
+      'update'
+      'untrack'
+      )
+
+if (( CURRENT == 1 )); then
+  _describe -t commands 'asp command' _asp_cmds || compadd "$@"
+else
+  local curcontext="$curcontext"
+  cmd="${${_asp_cmds[(r)$words[1]:*]%%:*}}"
+  if (( $#cmd )); then
+    if (( $+functions[_asp_$cmd] )); then
+      _asp_$cmd
+    else
+      _message "no more options"
+    fi
+  else
+    _message "unknown asp command: $words[1]"
+  fi
+fi
+}
+
+_arguments \
+  '-a[architecture]' \
+  '-f[overwrite files]' \
+  '-h[print help and exit]' \
+  '-V[print version and exit]' \
+  '*::asp command:_asp_command'
+
+# vim: set et sw=2 ts=2 ft=zsh :

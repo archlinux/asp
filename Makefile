@@ -12,6 +12,9 @@ MANPAGES = \
 BASH_COMPLETION = \
 	shell/bash-completion
 
+ZSH_COMPLETION = \
+	shell/zsh-completion
+
 INCLUDES = \
 	package.inc.sh \
 	remote.inc.sh \
@@ -43,6 +46,7 @@ install: all
 	install -m755 $(BINPROGS) $(DESTDIR)$(PREFIX)/bin
 	install -m644 $(MANPAGES) $(DESTDIR)$(PREFIX)/share/man/man1
 	install -Dm644 $(BASH_COMPLETION) $(DESTDIR)$(PREFIX)/share/bash-completion/completions/asp
+	install -Dm644 $(ZSH_COMPLETION) $(DESTDIR)$(PREFIX)/share/zsh/site-functions/_asp
 
 dist:
 	git archive --format=tar --prefix=$(PACKAGE_NAME)-$(VER)/ $(VER) | gzip -9 > $(PACKAGE_NAME)-$(VER).tar.gz

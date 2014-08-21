@@ -73,12 +73,6 @@ remote_update() {
   remote_update_refs "$remote" "${refspecs[@]}"
 }
 
-remote_get_url() {
-  local remote=$1
-
-  git ls-remote --get-url "$remote"
-}
-
 remote_untrack() {
   local remote=$1 pkgname=$2
 

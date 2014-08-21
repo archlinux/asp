@@ -58,6 +58,11 @@ update_packages() {
   local refspecs=() remote pkgname
   declare -A refspec_map
 
+  if (( $# == 0 )); then
+    update_all
+    return
+  fi
+
   # map packages to remotes
   for pkgname; do
     package_init -n "$pkgname" remote || return 1
@@ -202,11 +207,7 @@ shift
 
 case $action in
   update)
-    if (( $# == 0 )); then
-      update_all
-    else
-      update_packages "$@"
-    fi
+    update_packages "$@"
     ;;
   list-repos)
     map package_get_repos "$@"

@@ -67,7 +67,7 @@ package_log() {
       ;;
   esac
 
-  git log "${logargs[@]}" "$remote/packages/$pkgname"
+  git log "${logargs[@]}" "$remote/packages/$pkgname" -- trunk/
 }
 
 package_export() {

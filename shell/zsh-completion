@@ -15,6 +15,7 @@ _asp_command() {
       'list-repos'
       'log'
       'shortlog'
+      'show'
       'update'
       'untrack'
       )

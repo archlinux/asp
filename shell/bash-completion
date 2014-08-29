@@ -14,7 +14,7 @@ _asp() {
 
   # top level commands
   local -A verbs=(
-    [ALL_PACKAGES]='checkout difflog export list-arches list-repos log shortlog'
+    [ALL_PACKAGES]='checkout difflog export list-arches list-repos log shortlog show'
     [LOCAL_PACKAGES]='untrack update'
     [NONE]='disk-usage gc help list-all list-local'
   )

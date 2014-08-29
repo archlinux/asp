@@ -69,6 +69,12 @@ The following commands are understood:
 *shortlog*::
 	Show a condensed revision history of the target.
 
+*show*::
+	Show the PKGBUILD of the target, which may be in the format 'package' or
+	'repository/package'. If the repository is not specified, the PKGBUILD
+	will be shown at the most recent revision (which may be newer than what
+	is in the repositories).
+
 *update*::
 	For each target, if the package is not known to the local repository,
 	attempt to track it. If the package is tracked, update the package

@@ -70,6 +70,24 @@ package_log() {
   git log "${logargs[@]}" "$remote/packages/$pkgname" -- trunk/
 }
 
+package_show_pkgbuild() {
+  local pkgname=$1 remote repo subtree blob_id
+
+  if [[ $pkgname = */* ]]; then
+    IFS=/ read -r repo pkgname <<<"$pkgname"
+  fi
+
+  package_init "$pkgname" remote || return
+
+  if [[ $repo ]]; then
+    subtree=repos/$repo-$OPT_ARCH
+  else
+    subtree=trunk
+  fi
+
+  git show "remotes/$remote/packages/$pkgname":"$subtree"/PKGBUILD
+}
+
 package_export() {
   local pkgname=$1 remote repo arch
   local mode objtype objid path
@@ -80,7 +98,6 @@ package_export() {
 
   package_init "$pkgname" remote || return 1
 
-  # support $repo/$pkgname syntax
   if [[ $repo ]]; then
     subtree=repos/$repo-$OPT_ARCH
   else

@@ -121,13 +121,12 @@ package_checkout() {
 
 package_get_repos_with_arch() {
   local pkgname=$1 remote=$2
-  local objtype path arch repo
+  local path arch repo
 
-  while read _ objtype _ path; do
-    [[ $objtype = tree ]] || continue
-    IFS=- read repo arch <<<"${path#repos/}"
+  while read path; do
+    IFS=/- read _ repo arch <<<"$path"
     printf '%s %s\n' "$repo" "$arch"
-  done < <(git ls-tree "$remote/packages/$pkgname" repos/)
+  done < <(git ls-tree --name-only "$remote/packages/$pkgname" repos/)
 }
 
 package_get_arches() {

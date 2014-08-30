@@ -1,20 +1,5 @@
 declare -A refcache=()
 
-__remote_refcache_get() {
-  local remote=$1 ttl=3600 now= cachetime= cachefile=$ASPCACHE/remote-$remote
-
-  # miss
-  cachetime=$(stat -c %Y "$cachefile" 2>/dev/null) || return 1
-
-  printf -v now '%(%s)T' -1
-
-  # miss
-  (( now > (cachetime + ttl) )) && return 1
-
-  # hit
-  mapfile -t "$2" <"$cachefile"
-}
-
 __remote_refcache_update() {
   local remote=$1 cachefile=$ASPCACHE/remote-$remote
 
@@ -25,13 +10,23 @@ __remote_refcache_update() {
           mv "$cachefile"{~,}
 }
 
+__remote_refcache_get() {
+  local remote=$1 ttl=3600 now= cachetime= cachefile=$ASPCACHE/remote-$remote
+
+  printf -v now '%(%s)T' -1
+
+  if ! cachetime=$(stat -c %Y "$cachefile" 2>/dev/null) ||
+      (( now > (cachetime + ttl) )); then
+    __remote_refcache_update "$remote"
+  fi
+
+  mapfile -t "$2" <"$cachefile"
+}
+
 remote_get_all_refs() {
   local remote=$1
 
-  if ! __remote_refcache_get "$remote" "$2"; then
-    __remote_refcache_update "$remote"
-    __remote_refcache_get "$remote" "$2"
-  fi
+  __remote_refcache_get "$remote" "$2"
 }
 
 remote_has_package() {

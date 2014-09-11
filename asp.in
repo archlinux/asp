@@ -55,7 +55,17 @@ update_all() {
   done
 }
 
-update_packages() {
+update_local_branches() {
+  local r=0
+
+  while read -r branchname; do
+    git branch -qf "$branchname" "refs/remotes/$branchname" || r=1
+  done < <(git branch)
+
+  return "$r"
+}
+
+update_remote_branches() {
   local refspecs=() remote pkgname
   declare -A refspec_map
 
@@ -75,6 +85,10 @@ update_packages() {
     read -ra refspecs <<<"${refspec_map["$remote"]}"
     remote_update_refs "$remote" "${refspecs[@]}"
   done
+}
+
+update_packages() {
+  update_remote_branches "$@" && update_local_branches
 }
 
 migrate_bare_repo() {

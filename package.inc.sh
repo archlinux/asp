@@ -12,15 +12,7 @@ package_init() {
 
   (( do_update )) || return 0
 
-  if ! remote_is_tracking "${!2}" "$pkgname"; then
-    package_update "$pkgname" "${!2}" || return 1
-  fi
-}
-
-package_update() {
-  local pkgname=$1 remote=$2
-
-  git fetch "$remote" "packages/$pkgname"
+  remote_is_tracking "${!2}" "$pkgname" || remote_update_refs "${!2}" "$pkgname"
 }
 
 package_find_remote() {

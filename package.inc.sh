@@ -121,9 +121,7 @@ package_checkout() {
 
   package_init "$pkgname" remote || return 1
 
-  # create a local tracking branch to clone from. ignore errors because
-  # it might already exist.
-  git branch --no-track "$remote/packages/$pkgname" "$remote/packages/$pkgname" 2>/dev/null
+  git branch -qf --no-track "$remote/packages/$pkgname" "$remote/packages/$pkgname"
 
   git clone "$ASPROOT" --single-branch --branch "$remote/packages/$pkgname" \
     "$startdir/$pkgname"

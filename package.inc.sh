@@ -12,7 +12,8 @@ package_init() {
 
   (( do_update )) || return 0
 
-  remote_is_tracking "${!2}" "$pkgname" || remote_update_refs "${!2}" "$pkgname"
+  remote_is_tracking "${!2}" "$pkgname" ||
+      remote_update_refs "${!2}" "packages/$pkgname"
 }
 
 package_find_remote() {

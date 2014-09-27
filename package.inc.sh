@@ -121,7 +121,8 @@ package_checkout() {
 
   package_init "$pkgname" remote || return 1
 
-  git branch -qf --no-track "$remote/packages/$pkgname" "$remote/packages/$pkgname"
+  git show-ref -q "refs/heads/$remote/packages/$pkgname" ||
+      git branch -qf --no-track {,}"$remote/packages/$pkgname"
 
   git clone "$ASPROOT" --single-branch --branch "$remote/packages/$pkgname" \
     "$startdir/$pkgname"

@@ -125,7 +125,9 @@ package_checkout() {
       git branch -qf --no-track {,}"$remote/packages/$pkgname"
 
   git clone "$ASPROOT" --single-branch --branch "$remote/packages/$pkgname" \
-    "$startdir/$pkgname"
+    "$startdir/$pkgname" || return 1
+
+  git --git-dir="$startdir/$pkgname/.git" config pull.rebase true
 }
 
 package_get_repos_with_arch() {

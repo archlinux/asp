@@ -91,23 +91,8 @@ update_packages() {
   update_remote_branches "$@" && update_local_branches
 }
 
-migrate_bare_repo() {
-  files=(branches hooks info objects logs refs config description
-         {FETCH_,}HEAD)
-
-  { # figure out when to get rid of this
-    git config 'core.bare' 'false'
-    mkdir .git
-    mv "${files[@]}" .git
-  } 2>/dev/null
-}
-
 initialize() {
   local remote
-
-  if [[ -s config && $(git config core.bare) = 'true' ]]; then
-    migrate_bare_repo
-  fi
 
   [[ -d $ASPCACHE ]] || mkdir -p "$ASPCACHE"
 

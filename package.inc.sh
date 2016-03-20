@@ -64,7 +64,7 @@ package_log() {
 }
 
 package_show_pkgbuild() {
-  local pkgname=$1 remote repo subtree blob_id
+  local pkgname=$1 remote repo subtree
 
   if [[ $pkgname = */* ]]; then
     IFS=/ read -r repo pkgname <<<"$pkgname"
@@ -78,12 +78,11 @@ package_show_pkgbuild() {
     subtree=trunk
   fi
 
-  git show "remotes/$remote/packages/$pkgname":"$subtree"/PKGBUILD
+  git show "remotes/$remote/packages/$pkgname:$subtree"/PKGBUILD
 }
 
 package_export() {
-  local pkgname=$1 remote repo arch
-  local mode objtype objid path
+  local pkgname=$1 remote repo arch path
 
   if [[ $pkgname = */* ]]; then
     IFS=/ read -r repo pkgname <<<"$pkgname"
@@ -134,8 +133,8 @@ package_get_repos_with_arch() {
   local pkgname=$1 remote=$2
   local path arch repo
 
-  while read path; do
-    IFS=/- read _ repo arch <<<"$path"
+  while read -r path; do
+    IFS=/- read -r _ repo arch <<<"$path"
     printf '%s %s\n' "$repo" "$arch"
   done < <(git ls-tree --name-only "$remote/packages/$pkgname" repos/)
 }
@@ -146,7 +145,7 @@ package_get_arches() {
 
   package_init "$pkgname" remote || return 1
 
-  while read _ arch; do
+  while read -r _ arch; do
     arches["$arch"]=1
   done < <(package_get_repos_with_arch "$pkgname" "$remote")
 
@@ -159,7 +158,7 @@ package_get_repos() {
 
   package_init "$pkgname" remote || return 1
 
-  while read repo _; do
+  while read -r repo _; do
     repos["$repo"]=1
   done < <(package_get_repos_with_arch "$pkgname" "$remote")
 

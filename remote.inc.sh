@@ -1,5 +1,3 @@
-declare -A refcache=()
-
 __remote_refcache_update() {
   local remote=$1 cachefile=$ASPCACHE/remote-$remote
 
@@ -11,7 +9,7 @@ __remote_refcache_update() {
 }
 
 __remote_refcache_get() {
-  local remote=$1 ttl=3600 now= cachetime= cachefile=$ASPCACHE/remote-$remote
+  local remote=$1 ttl=3600 now cachetime cachefile=$ASPCACHE/remote-$remote
 
   printf -v now '%(%s)T' -1
 

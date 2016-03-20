@@ -139,15 +139,15 @@ list_all() {
 }
 
 shortlog() {
-  package_log "$@" "$FUNCNAME"
+  package_log "$@" "${FUNCNAME[0]}"
 }
 
 log() {
-  package_log "$@" "$FUNCNAME"
+  package_log "$@" "${FUNCNAME[0]}"
 }
 
 difflog() {
-  package_log "$@" "$FUNCNAME"
+  package_log "$@" "${FUNCNAME[0]}"
 }
 
 gc() {

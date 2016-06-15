@@ -171,6 +171,113 @@ disk_usage() {
   log_info 'Using %s on disk.' "$usage"
 }
 
+action__checkout() {
+  map package_checkout "$@"
+}
+
+action__difflog() {
+  difflog "$1"
+}
+
+action__disk-usage() {
+  disk_usage
+}
+
+action__export() {
+  map package_export "$@"
+}
+
+action__gc() {
+  gc
+}
+
+action__help() {
+  usage
+}
+
+action__list-all() {
+  list_all
+}
+
+action__list-arches() {
+  map package_get_arches "$@"
+}
+
+action__list-local() {
+  list_local
+}
+
+action__list-repos() {
+  map package_get_repos "$@"
+}
+
+action__log() {
+  log "$1"
+}
+
+action__shortlog() {
+  shortlog "$1"
+}
+
+action__show() {
+  package_show_pkgbuild "$1"
+}
+
+action__untrack() {
+  map untrack "$@"
+}
+
+action__update() {
+  update_packages "$@"
+}
+
+dispatch_action() {
+  local a candidates=()
+  local actions=(
+    checkout
+    difflog
+    disk-usage
+    export
+    gc
+    help
+    list-all
+    list-arches
+    list-local
+    list-repos
+    log
+    shortlog
+    show
+    untrack
+    update
+  )
+
+  [[ $1 ]] || log_fatal 'no action specified (use -h for help)'
+
+  for a in "${actions[@]}"; do
+    if [[ $a = "$1" ]]; then
+      candidates=("$a")
+      break
+    fi
+
+    [[ $a = "$1"* ]] && candidates+=("$a")
+  done
+
+  case ${#candidates[*]} in
+    0)
+      log_fatal 'unknown action: %s' "$1"
+      ;;
+    1)
+      "action__${candidates[0]}" "${@:2}"
+      ;;
+    *)
+      {
+        printf "error: verb '%s' is ambiguous; possibilities:" "$1"
+        printf " '%s'" "${candidates[@]}"
+        echo
+      } >&2
+  esac
+}
+
 umask 0022
 startdir=$PWD
 cd "$ASPROOT" || log_fatal "ASPROOT ($ASPROOT) does not exist!"
@@ -202,61 +309,5 @@ while getopts ':a:fhV' flag; do
 done
 shift $(( OPTIND - 1 ))
 
-action=$1
-shift
-
-case $action in
-  update)
-    update_packages "$@"
-    ;;
-  list-repos)
-    map package_get_repos "$@"
-    ;;
-  list-arches)
-    map package_get_arches "$@"
-    ;;
-  list-all)
-    list_all
-    ;;
-  list-local)
-    list_local
-    ;;
-  export)
-    map package_export "$@"
-    ;;
-  shortlog)
-    shortlog "$1"
-    ;;
-  log)
-    log "$1"
-    ;;
-  show)
-    package_show_pkgbuild "$1"
-    ;;
-  difflog)
-    difflog "$1"
-    ;;
-  disk-usage)
-    disk_usage
-    ;;
-  gc)
-    gc
-    ;;
-  untrack)
-    map untrack "$@"
-    ;;
-  help)
-    usage
-    exit 0
-    ;;
-  checkout)
-    map package_checkout "$@"
-    ;;
-  '')
-    log_fatal 'no action specified (use -h for help)'
-    ;;
-  *)
-    log_fatal 'unknown action: %s' "$action"
-    ;;
-esac
+dispatch_action "$@"
 

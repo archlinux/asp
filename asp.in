@@ -120,7 +120,7 @@ initialize() {
   git init || return 1
 
   for remote in "${ARCH_GIT_REPOS[@]}"; do
-    git remote add "$remote" git://projects.archlinux.org/svntogit/"$remote".git
+    git remote add "$remote" git://git.archlinux.org/svntogit/"$remote".git
   done
 
   touch .asp

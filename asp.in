@@ -5,7 +5,7 @@ ARCH_GIT_REPOS=(packages community)
 OPT_ARCH=$(uname -m)
 OPT_FORCE=0
 : ${ASPROOT:=$HOME/asp}
-: ${ASPCACHE:=$ASPROOT/cache}
+: ${ASPCACHE:=${XDG_CACHE_HOME:-$HOME/.cache}/asp}
 
 m4_include(util.inc.sh)
 m4_include(remote.inc.sh)

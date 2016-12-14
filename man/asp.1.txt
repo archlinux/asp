@@ -107,7 +107,7 @@ Environment
 	to '$HOME/asp'.
 
 *ASPCACHE*::
-	Determines where cached data is stored. Defaults to '$ASPROOT/cache'. Data in
+	Determines where cached data is stored. Defaults to '$XDG_CACHE_HOME/asp'. Data in
 	this directory can always be safely deleted.
 
 Authors

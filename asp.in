@@ -43,22 +43,27 @@ EOF
 }
 
 __require_argc() {
-  local operator=$1 expected=$2 got=$(( ${#BASH_ARGV[@]} - 1 ))
+  local min max argc=$(( BASH_ARGC - 1 ))
 
-  case $operator in
-    '==')
-      (( got == expected )) ||
-          log_fatal '%s expects %d args, got %d' "${FUNCNAME[1]#action__}" "$expected" "$got"
+  case $1 in
+    *-*)
+      IFS=- read -r min max <<<"$1"
       ;;
-    '>=')
-      (( got >= expected )) ||
-          log_fatal '%s expects at least %d args, got %d' "${FUNCNAME[1]#action__}" "$expected" "$got"
+    *-)
+      min=${1%-}
       ;;
-    '<=')
-      (( got <= expected )) ||
-          log_fatal '%s expects at most %d args, got %d' "${FUNCNAME[1]#action__}" "$expected" "$got"
+    *)
+      min=$1 max=$1
       ;;
   esac
+
+  if (( min == max && argc != min )); then
+    log_fatal '%s expects %d args, got %d' "${FUNCNAME[1]#action__}" "$min" "$argc"
+  elif (( max && argc > max )); then
+    log_fatal '%s expects at most %d args, got %d' "${FUNCNAME[1]#action__}" "$max" "$argc"
+  elif (( argc < min )); then
+    log_fatal '%s expects at least %d args, got %d' "${FUNCNAME[1]#action__}" "$min" "$argc"
+  fi
 }
 
 version() {
@@ -191,72 +196,72 @@ disk_usage() {
 }
 
 action__checkout() {
-  __require_argc '>=' 1
+  __require_argc 1-
   map package_checkout "$@"
 }
 
 action__difflog() {
-  __require_argc == 1
+  __require_argc 1
   difflog "$1"
 }
 
 action__disk-usage() {
-  __require_argc == 0
+  __require_argc 0
   disk_usage
 }
 
 action__export() {
-  __require_argc '>=' 1
+  __require_argc 1-
   map package_export "$@"
 }
 
 action__gc() {
-  __require_argc == 0
+  __require_argc 0
   gc
 }
 
 action__help() {
-  __require_argc == 0
+  __require_argc 0
   usage
 }
 
 action__list-all() {
-  __require_argc == 0
+  __require_argc 0
   list_all
 }
 
 action__list-arches() {
-  __require_argc '>=' 1
+  __require_argc 1-
   map package_get_arches "$@"
 }
 
 action__list-local() {
-  __require_argc == 0
+  __require_argc 0
   list_local
 }
 
 action__list-repos() {
-  __require_argc '>=' 1
+  __require_argc 1-
   map package_get_repos "$@"
 }
 
 action__log() {
-  __require_argc == 1
+  __require_argc 1
   log "$1"
 }
 
 action__shortlog() {
-  __require_argc == 1
+  __require_argc 1
   shortlog "$1"
 }
 
 action__show() {
-  __require_argc == 1
+  __require_argc 1
   package_show_pkgbuild "$1"
 }
 
 action__untrack() {
-  __require_argc '>=' 1
+  __require_argc 1-
   map untrack "$@"
 }
 

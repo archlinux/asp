@@ -55,7 +55,7 @@ _asp() {
   case $verb in
     show)
       if (( i < ${#COMP_WORDS[@]} - 2 )); then
-        comps=$(\asp ls-files "${COMP_WORDS[i+1]}")
+        comps=$(\asp ls-files "${COMP_WORDS[i+1]}" 2>/dev/null)
       fi
       ;;
     '')

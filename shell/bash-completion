@@ -8,7 +8,7 @@ in_array() {
 }
 
 _asp() {
-  local a= cur= prev= comps=
+  local verb='' i cur prev comps
 
   _get_comp_words_by_ref cur prev
 
@@ -34,24 +34,34 @@ _asp() {
     return 0
   fi
 
-  for word in "${COMP_WORDS[@]}"; do
+  # verb completion
+  for (( i = 0; i < ${#COMP_WORDS[@]}; ++i )); do
+    word=${COMP_WORDS[i]}
     if in_array "$word" ${verbs[ALL_PACKAGES]}; then
-      a=$word
+      verb=$word
       comps=$(\asp list-all | sed 's,.*/,,')
       break
     elif in_array "$word" ${verbs[LOCAL_PACKAGES]}; then
-      a=$word
+      verb=$word
       comps=$(\asp list-local | sed 's,.*/,,')
       break
     elif in_array "$word" ${verbs[NONE]}; then
-      a=$word
+      verb=$word
       break
     fi
   done
 
-  if [[ -z $a ]]; then
-    comps=${verbs[*]}
-  fi
+  # sub-verb completion
+  case $verb in
+    show)
+      if (( i < ${#COMP_WORDS[@]} - 2 )); then
+        comps=$(\asp ls-files "${COMP_WORDS[i+1]}")
+      fi
+      ;;
+    '')
+      comps=${verbs[*]}
+      ;;
+  esac
 
   if [[ $comps ]]; then
     COMPREPLY=( $(compgen -W '$comps' -- "$cur") )

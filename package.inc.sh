@@ -1,6 +1,5 @@
 package_init() {
-  local pkgname=$1
-  local do_update=1
+  local do_update=1 pkgname=$1
 
   if [[ $1 = -n ]]; then
     do_update=0
@@ -63,8 +62,8 @@ package_log() {
   git log "${logargs[@]}" "$remote/packages/$pkgname" -- trunk/
 }
 
-package_show_pkgbuild() {
-  local pkgname=$1 remote repo subtree
+package_show_file() {
+  local pkgname=$1 file=${2:-PKGBUILD} remote repo subtree
 
   if [[ $pkgname = */* ]]; then
     IFS=/ read -r repo pkgname <<<"$pkgname"
@@ -72,13 +71,23 @@ package_show_pkgbuild() {
 
   package_init "$pkgname" remote || return
 
-  if [[ $repo ]]; then
-    subtree=repos/$repo-$OPT_ARCH
-  else
-    subtree=trunk
+  if [[ $file != */* ]]; then
+    if [[ $repo ]]; then
+      subtree=repos/$repo-$OPT_ARCH/
+    else
+      subtree=trunk/
+    fi
   fi
 
-  git show "remotes/$remote/packages/$pkgname:$subtree"/PKGBUILD
+  git show "remotes/$remote/packages/$pkgname:$subtree$file"
+}
+
+package_list_files() {
+  local pkgname=$1 remote
+
+  package_init "$pkgname" remote || return
+
+  git ls-tree -r --name-only "remotes/$remote/packages/$pkgname" "trunk" | sed 's,^trunk/,,'
 }
 
 package_export() {
@@ -107,6 +116,7 @@ package_export() {
   fi
 
   if (( ! OPT_FORCE )); then
+    # shellcheck disable=SC2154
     mkdir "$startdir/$pkgname" || return 1
   fi
 

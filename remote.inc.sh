@@ -1,6 +1,7 @@
 __remote_refcache_update() {
   local remote=$1 cachefile=$ASPCACHE/remote-$remote
 
+  # shellcheck disable=SC2064
   trap "rm -f '$cachefile~'" RETURN
 
   git ls-remote "$remote" 'refs/heads/packages/*' |

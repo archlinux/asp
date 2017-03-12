@@ -34,8 +34,9 @@ Commands:
   list-arches  NAME...     List architectures for packages
   list-local               List tracked packages
   list-repos   NAME...     List repos for packages
+  ls-files     NAME        List files for package
   log          NAME        Show revision history
-  show         NAME        Show the PKGBUILD
+  show         NAME [FILE] Show the PKGBUILD or other FILE
   shortlog     NAME        Show revision history in short form
   update       [NAME...]   Update packages (update all tracked if none specified)
   untrack      NAME...     Remove a package from the local repository
@@ -256,8 +257,8 @@ action__shortlog() {
 }
 
 action__show() {
-  __require_argc 1
-  package_show_pkgbuild "$1"
+  __require_argc 1-2
+  package_show_file "$@"
 }
 
 action__untrack() {
@@ -267,6 +268,12 @@ action__untrack() {
 
 action__update() {
   update_packages "$@"
+}
+
+action__ls-files() {
+  __require_argc 1
+
+  package_list_files "$1"
 }
 
 dispatch_action() {
@@ -282,6 +289,7 @@ dispatch_action() {
     list-arches
     list-local
     list-repos
+    ls-files
     log
     shortlog
     show
@@ -348,4 +356,3 @@ done
 shift $(( OPTIND - 1 ))
 
 dispatch_action "$@"
-

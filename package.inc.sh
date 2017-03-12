@@ -85,9 +85,21 @@ package_show_file() {
 package_list_files() {
   local pkgname=$1 remote
 
+  if [[ $pkgname = */* ]]; then
+    IFS=/ read -r repo pkgname <<<"$pkgname"
+  fi
+
   package_init "$pkgname" remote || return
 
-  git ls-tree -r --name-only "remotes/$remote/packages/$pkgname" "trunk" | sed 's,^trunk/,,'
+  if [[ $repo ]]; then
+    subtree=repos/$repo-$OPT_ARCH
+  else
+    subtree=trunk
+  fi
+
+
+  git ls-tree -r --name-only "remotes/$remote/packages/$pkgname" "$subtree" |
+      awk -v prefix=$subtree/ 'sub(prefix, "")'
 }
 
 package_export() {

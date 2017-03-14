@@ -176,8 +176,7 @@ difflog() {
 }
 
 gc() {
-  git prune
-  git gc
+  git gc --prune=all
 }
 
 untrack() {

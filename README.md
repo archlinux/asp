@@ -10,7 +10,7 @@ full checkout (for whatever reason that may be).
 
 None! Though, it should be noted that the `ASPROOT` environment variable
 will control where `asp` keeps its local git repo. By default, this is
-`$HOME/asp`.
+`${XDG_CACHE_HOME:-$HOME/.cache}/asp`.
 
 # Examples
 

@@ -1,13 +1,32 @@
+package_resolve() {
+  local pkgbase
+
+  [[ -v pkgname ]] || log_fatal 'BUG: package_resolve called without pkgname var set'
+
+  if package_find_remote "$1" "$2"; then
+    return 0
+  fi
+
+  if pkgbase=$(archweb_get_pkgbase "$1") && package_find_remote "$pkgbase" "$2"; then
+    log_info '%s is part of package %s' "$1" "$pkgbase"
+    printf -v pkgname %s "$pkgbase"
+    return 0
+  fi
+
+  log_error 'unknown package: %s' "$pkgname"
+}
+
 package_init() {
-  local do_update=1 pkgname=$1
+  local do_update=1
 
   if [[ $1 = -n ]]; then
     do_update=0
     shift
-    pkgname=$1
   fi
 
-  package_find_remote "$pkgname" "$2" || return 1
+  pkgname=$1
+
+  package_resolve "$pkgname" "$2" || return 1
 
   (( do_update )) || return 0
 
@@ -16,7 +35,7 @@ package_init() {
 }
 
 package_find_remote() {
-  local pkgname=$1
+  pkgname=$1
 
   # fastpath, checks local caches only
   for r in "${ARCH_GIT_REPOS[@]}"; do
@@ -34,13 +53,12 @@ package_find_remote() {
     fi
   done
 
-  log_error 'unknown package: %s' "$pkgname"
-
   return 1
 }
 
 package_log() {
-  local pkgname=$1 method=$2 logargs remote
+  local method=$2 logargs remote
+  pkgname=$1
 
   package_init "$pkgname" remote || return
 
@@ -63,7 +81,8 @@ package_log() {
 }
 
 package_show_file() {
-  local pkgname=$1 file=${2:-PKGBUILD} remote repo subtree
+  local file=${2:-PKGBUILD} remote repo subtree
+  pkgname=$1
 
   if [[ $pkgname = */* ]]; then
     IFS=/ read -r repo pkgname <<<"$pkgname"
@@ -83,7 +102,8 @@ package_show_file() {
 }
 
 package_list_files() {
-  local pkgname=$1 remote
+  local remote
+  pkgname=$1
 
   if [[ $pkgname = */* ]]; then
     IFS=/ read -r repo pkgname <<<"$pkgname"
@@ -103,7 +123,8 @@ package_list_files() {
 }
 
 package_export() {
-  local pkgname=$1 remote repo arch path
+  local remote repo arch path
+  pkgname=$1
 
   if [[ $pkgname = */* ]]; then
     IFS=/ read -r repo pkgname <<<"$pkgname"
@@ -138,7 +159,8 @@ package_export() {
 }
 
 package_checkout() {
-  local pkgname=$1 remote
+  local remote
+  pkgname=$1
 
   package_init "$pkgname" remote || return 1
 
@@ -152,8 +174,8 @@ package_checkout() {
 }
 
 package_get_repos_with_arch() {
-  local pkgname=$1 remote=$2
-  local path arch repo
+  local remote=$2 path arch repo
+  pkgname=$1
 
   while read -r path; do
     IFS=/- read -r _ repo arch <<<"$path"
@@ -162,8 +184,9 @@ package_get_repos_with_arch() {
 }
 
 package_get_arches() {
-  local pkgname=$1 remote arch
+  local remote arch
   declare -A arches
+  pkgname=$1
 
   package_init "$pkgname" remote || return 1
 
@@ -175,8 +198,9 @@ package_get_arches() {
 }
 
 package_get_repos() {
-  local pkgname=$1 remote repo
+  local remote repo
   declare -A repos
+  pkgname=$1
 
   package_init "$pkgname" remote || return 1
 
@@ -188,7 +212,8 @@ package_get_repos() {
 }
 
 package_untrack() {
-  local pkgname=$1 remote=$2
+  local remote=$2
+  pkgname=$1
 
   if git show-ref -q "refs/heads/$remote/packages/$pkgname"; then
     git branch -D "$remote/packages/$pkgname"

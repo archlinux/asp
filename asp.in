@@ -10,6 +10,7 @@ OPT_FORCE=0
 m4_include(util.inc.sh)
 m4_include(remote.inc.sh)
 m4_include(package.inc.sh)
+m4_include(archweb.inc.sh)
 
 usage() {
   cat<<EOF

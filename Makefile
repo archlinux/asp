@@ -16,6 +16,7 @@ ZSH_COMPLETION = \
 	shell/zsh-completion
 
 INCLUDES = \
+	archweb.inc.sh \
 	package.inc.sh \
 	remote.inc.sh \
 	util.inc.sh

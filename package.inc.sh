@@ -16,12 +16,12 @@ package_init() {
 }
 
 package_find_remote() {
-  local pkgname=$1 out=$2
+  local pkgname=$1
 
   # fastpath, checks local caches only
   for r in "${ARCH_GIT_REPOS[@]}"; do
     if remote_is_tracking "$r" "$pkgname"; then
-      printf -v "$out" %s "$r"
+      printf -v "$2" %s "$r"
       return 0
     fi
   done
@@ -29,7 +29,7 @@ package_find_remote() {
   # slowpath, needs to talk to the remote
   for r in "${ARCH_GIT_REPOS[@]}"; do
     if remote_has_package "$r" "$pkgname"; then
-      printf -v "$out" %s "$r"
+      printf -v "$2" %s "$r"
       return 0
     fi
   done

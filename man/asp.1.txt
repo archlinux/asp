@@ -108,7 +108,7 @@ Environment
 -----------
 *ASPROOT*::
 	Determines where the metadata is stored for locally tracked packages. Defaults
-	to '$HOME/asp'.
+	to '${XDG_CACHE_HOME:-$HOME/.cache}/asp'.
 
 *ASPCACHE*::
 	Determines where cached data is stored. Defaults to '$ASPROOT/cache'. Data in

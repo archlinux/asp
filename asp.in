@@ -36,8 +36,8 @@ Commands:
   list-repos   NAME...     List repos for packages
   ls-files     NAME        List files for package
   log          NAME        Show revision history
-  show         NAME [FILE] Show the PKGBUILD or other FILE
   shortlog     NAME        Show revision history in short form
+  show         NAME [FILE] Show the PKGBUILD or other FILE
   update       [NAME...]   Update packages (update all tracked if none specified)
   untrack      NAME...     Remove a package from the local repository
 EOF

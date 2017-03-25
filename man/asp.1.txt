@@ -23,7 +23,7 @@ Commands
 --------
 The following commands are understood:
 
-*checkout*::
+*checkout* 'TARGET'...::
 	Create a new git repository containing the full source and history
 	for each of the given targets. The new repository will pull from the
 	repository in '$ASPROOT' and must be updated separately after using
@@ -31,10 +31,10 @@ The following commands are understood:
 	most of the metadata can be hard linked, making this a relatively cheap
 	copy.
 
-*difflog*::
+*difflog* 'TARGET'::
 	Show the full revision history of the target, with file diffs.
 
-*export*::
+*export* 'TARGET'...::
 	Dump the build source files for each target into a directory of the
 	target's name in '$PWD'. Targets can be specified simply as 'package' to
 	check out the source files at HEAD, or in 'repository/package' format
@@ -54,34 +54,38 @@ The following commands are understood:
 *list-all*::
 	List all known packages in the repositories.
 
-*list-arches*::
+*list-arches* 'TARGET'...::
 	List the architectures the given targets are available for.
 
 *list-local*::
 	List all packages which are tracked locally.
 
-*list-repos*::
+*list-repos* 'TARGET'...::
 	List the repositories the given targets exist in.
 
-*log*::
+*ls-files* 'TARGET'::
+	List source files for the given target.
+
+*log* 'TARGET'::
 	Show the revision history of the target.
 
-*shortlog*::
+*shortlog* 'TARGET'::
 	Show a condensed revision history of the target.
 
-*show*::
-	Show the PKGBUILD of the target, which may be in the format 'package' or
-	'repository/package'. If the repository is not specified, the PKGBUILD
-	will be shown at the most recent revision (which may be newer than what
-	is in the repositories).
+*show* 'TARGET' ['FILE']::
+	Show the file content of the target, which may be in the format 'package'
+	or 'repository/package'. If an additional 'file' argument is provided, attempt
+	to display that file rather than the PKGBUILD. If the repository is not
+	specified, the file will be shown at the most recent revision (which may be
+	newer than what is in the repositories).
 
-*update*::
+*update* ['TARGET'...]::
 	For each target, if the package is not known to the local repository,
 	attempt to track it. If the package is tracked, update the package
 	to the newest version. If no targets are provided, all locally known
 	packages will be updated.
 
-*untrack*::
+*untrack* 'TARGET'...::
 	Remove a remote tracking branch from the local repository. Disk usage for
 	the removed package(s) may not be freed until garbage collection has taken
 	place.

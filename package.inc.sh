@@ -1,7 +1,7 @@
 package_resolve() {
   local pkgbase
 
-  [[ -v pkgname ]] || log_fatal 'BUG: package_resolve called without pkgname var set'
+  [[ $pkgname ]] || log_fatal 'BUG: package_resolve called without pkgname var set'
 
   if package_find_remote "$1" "$2"; then
     return 0
@@ -9,7 +9,7 @@ package_resolve() {
 
   if pkgbase=$(archweb_get_pkgbase "$1") && package_find_remote "$pkgbase" "$2"; then
     log_info '%s is part of package %s' "$1" "$pkgbase"
-    printf -v pkgname %s "$pkgbase"
+    pkgname=$pkgbase
     return 0
   fi
 
@@ -64,10 +64,10 @@ package_log() {
 
   case $method in
     shortlog)
-      logargs=(--pretty=oneline)
+      logargs=('--pretty=oneline')
       ;;
     difflog)
-      logargs=(-p)
+      logargs=('-p')
       ;;
     log)
       logargs=()

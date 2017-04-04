@@ -39,11 +39,11 @@ _asp() {
     word=${COMP_WORDS[i]}
     if in_array "$word" ${verbs[ALL_PACKAGES]}; then
       verb=$word
-      comps=$(\asp list-all | sed 's,.*/,,')
+      comps=$(ASP_GIT_QUIET=1 \asp list-all | sed 's,.*/,,')
       break
     elif in_array "$word" ${verbs[LOCAL_PACKAGES]}; then
       verb=$word
-      comps=$(\asp list-local | sed 's,.*/,,')
+      comps=$(ASP_GIT_QUIET=1 \asp list-local | sed 's,.*/,,')
       break
     elif in_array "$word" ${verbs[NONE]}; then
       verb=$word
@@ -55,7 +55,7 @@ _asp() {
   case $verb in
     show)
       if (( i < ${#COMP_WORDS[@]} - 2 )); then
-        comps=$(\asp ls-files "${COMP_WORDS[i+1]}" 2>/dev/null)
+        comps=$(ASP_GIT_QUIET=1 \asp ls-files "${COMP_WORDS[i+1]}" 2>/dev/null)
       fi
       ;;
     '')

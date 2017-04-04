@@ -36,3 +36,11 @@ in_array() {
 
   return 1
 }
+
+quiet_git() {
+  local q
+
+  [[ $ASP_GIT_QUIET ]] && q=('-q')
+
+  command git "$1" "${q[@]}" "${@:2}"
+}

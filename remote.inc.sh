@@ -52,7 +52,7 @@ remote_get_tracked_refs() {
 remote_update_refs() {
   local remote=$1 refspecs=("${@:2}")
 
-  git fetch "$remote" "${refspecs[@]}"
+  quiet_git fetch "$remote" "${refspecs[@]}"
 }
 
 remote_update() {

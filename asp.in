@@ -120,14 +120,23 @@ update_packages() {
 initialize() {
   local remote
 
+  umask 0022
+  startdir=$PWD
+
+  if [[ ! -d $ASPROOT ]]; then
+    log_info 'Initializing ASPROOT in %s' "$ASPROOT"
+    mkdir -p "$ASPROOT"
+  fi
+
+  cd "$ASPROOT" || log_fatal "ASPROOT ($ASPROOT) does not exist!"
+
   [[ -d $ASPCACHE ]] || mkdir -p "$ASPCACHE"
 
   [[ -f .asp ]] && return 0
 
-  git init || return 1
-
+  git init -q || return 1
   for remote in "${ARCH_GIT_REPOS[@]}"; do
-    git remote add "$remote" git://git.archlinux.org/svntogit/"$remote".git
+    git remote add "$remote" "git://git.archlinux.org/svntogit/$remote.git"
   done
 
   touch .asp
@@ -324,9 +333,6 @@ dispatch_action() {
   esac
 }
 
-umask 0022
-startdir=$PWD
-cd "$ASPROOT" || log_fatal "ASPROOT ($ASPROOT) does not exist!"
 initialize
 
 while getopts ':a:fhV' flag; do

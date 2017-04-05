@@ -39,6 +39,9 @@ man/%: man/%.txt Makefile
 		-a manversion=$(VERSION) \
 		-a manmanual="$(PACKAGE_NAME) manual" $<
 
+check: $(BINPROGS)
+	@for f in $(BINPROGS); do bash -O extglob -n $$f; done
+
 clean:
 	$(RM) $(BINPROGS) $(MANPAGES)
 

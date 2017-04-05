@@ -45,8 +45,8 @@ remote_is_tracking() {
 remote_get_tracked_refs() {
   local remote=$1
 
-  mapfile -t "$2" < <(git for-each-ref --format='%(refname)' "refs/remotes/$1" |
-      awk -F'/' -v "remote=$1" '{ print "packages/" $NF }')
+  mapfile -t "$2" < \
+    <(git for-each-ref --format='%(refname:strip=3)' "refs/remotes/$remote")
 }
 
 remote_update_refs() {

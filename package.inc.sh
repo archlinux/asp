@@ -119,7 +119,7 @@ package_list_files() {
 
 
   git ls-tree -r --name-only "remotes/$remote/packages/$pkgname" "$subtree" |
-      awk -v prefix=$subtree/ 'sub(prefix, "")'
+      awk -v "prefix=$subtree/" 'sub(prefix, "")'
 }
 
 package_export() {

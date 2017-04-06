@@ -128,9 +128,11 @@ initialize() {
     mkdir -p "$ASPROOT"
   fi
 
-  cd "$ASPROOT" || log_fatal "ASPROOT ($ASPROOT) does not exist!"
+  cd "$ASPROOT" || log_fatal "ASPROOT (%s) does not exist!" "$ASPROOT"
 
-  [[ -d $ASPCACHE ]] || mkdir -p "$ASPCACHE"
+  if [[ ! -d $ASPCACHE ]] && ! mkdir -p "$ASPCACHE"; then
+    log_fatal 'failed to create ASPCACHE (%s)' "$ASPCACHE"
+  fi
 
   [[ -f .asp ]] && return 0
 

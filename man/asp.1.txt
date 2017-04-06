@@ -16,7 +16,7 @@ Description
 -----------
 Manage the version-controlled sources for the build scripts used to create Arch
 Linux packages. This program provides a thin wrapper over the svntogit
-repositories hosted at http://projects.archlinux.org. It aims to provide a
+repositories hosted at https://git.archlinux.org. It aims to provide a
 replacement for abs which favors a sparse checkout.
 
 Commands

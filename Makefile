@@ -1,5 +1,11 @@
 PACKAGE_NAME = asp
-VER=0
+
+VERSION = v0
+VDEVEL = $(shell test -d .git && git describe --dirty 2>/dev/null)
+
+ifneq "$(VDEVEL)" ""
+VERSION = $(VDEVEL)
+endif
 
 PREFIX = /usr/local
 
@@ -27,7 +33,7 @@ V_GEN = $(_v_GEN_$(V))
 _v_GEN_ = $(_v_GEN_0)
 _v_GEN_0 = @echo "  GEN     " $@;
 
-edit = $(V_GEN) m4 -P $@.in >$@ && chmod go-w,+x $@
+edit = $(V_GEN) m4 -P $@.in | sed 's/@ASP_VERSION@/$(VERSION)/' >$@ && chmod go-w,+x $@
 
 %: %.in $(INCLUDES)
 	$(edit)
@@ -36,7 +42,7 @@ doc: $(MANPAGES)
 man/%: man/%.txt Makefile
 	$(V_GEN) a2x -d manpage \
 		-f manpage \
-		-a manversion=$(VERSION) \
+		-a manversion="$(PACKAGE_NAME) $(VERSION)" \
 		-a manmanual="$(PACKAGE_NAME) manual" $<
 
 check: $(BINPROGS)
@@ -53,7 +59,7 @@ install: all
 	install -Dm644 $(ZSH_COMPLETION) $(DESTDIR)$(PREFIX)/share/zsh/site-functions/_asp
 
 dist:
-	git archive --format=tar --prefix=$(PACKAGE_NAME)-$(VER)/ $(VER) | gzip -9 > $(PACKAGE_NAME)-$(VER).tar.gz
-	gpg --detach-sign --use-agent $(PACKAGE_NAME)-$(VER).tar.gz
+	git archive --format=tar --prefix=$(PACKAGE_NAME)-$(VERSION)/ $(VERSION) | gzip -9 > $(PACKAGE_NAME)-$(VERSION).tar.gz
+	gpg --detach-sign --use-agent $(PACKAGE_NAME)-$(VERSION).tar.gz
 
 .PHONY: all clean install uninstall dist

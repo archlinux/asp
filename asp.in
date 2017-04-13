@@ -1,5 +1,6 @@
 #!/bin/bash
 
+ASP_VERSION=@ASP_VERSION@
 ARCH_GIT_REPOS=(packages community)
 
 OPT_ARCH=$(uname -m)
@@ -14,7 +15,7 @@ m4_include(archweb.inc.sh)
 
 usage() {
   cat<<EOF
-asp [OPTIONS...] {COMMAND} ...
+asp $ASP_VERSION [OPTIONS...] {COMMAND} ...
 
 Manage build sources for Arch packages.
 
@@ -69,7 +70,7 @@ __require_argc() {
 }
 
 version() {
-  printf 'asp v0\n'
+  printf 'asp %s\n' "$ASP_VERSION"
 }
 
 update_all() {

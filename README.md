@@ -1,10 +1,10 @@
 # asp
 
 `asp` is a tool to manage the build source files used to create Arch Linux
-packages. It attempts to replace the `abs` tool, offering more up to date
-sources (via the svntogit repositories) and uses a sparse checkout model to
-conserve diskspace. This probably won't be interesting to users who want a
-full checkout (for whatever reason that may be).
+packages. It replaces the `abs` tool, offering more up to date sources (via the
+svntogit repositories) and uses a sparse checkout model to conserve diskspace.
+This probably won't be interesting to users who want a full checkout (for
+whatever reason that may be).
 
 # Setup
 

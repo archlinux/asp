@@ -163,9 +163,9 @@ dump_packages() {
   for remote in "${ARCH_GIT_REPOS[@]}"; do
     "$dumpfn" "$remote" refspecs
     if [[ $refspecs ]]; then
-      printf '%s\n' "${refspecs[@]/#packages/"$remote"}"
+      printf '%s\n' "${refspecs[@]##*/}"
     fi
-  done
+  done | sort
 }
 
 list_local() {

@@ -155,7 +155,7 @@ package_export() {
 
   log_info 'exporting %s:%s' "$pkgname" "$subtree"
   git archive --format=tar "remotes/$remote/packages/$pkgname" "$subtree/" |
-      bsdtar -C "$startdir" -s ",^$subtree/,$pkgname/," -xf - "$subtree/"
+      tar -C "$startdir" --transform "s,^$subtree,$pkgname," -xf - "$subtree/"
 }
 
 package_checkout() {

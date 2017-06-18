@@ -28,20 +28,20 @@ Options:
 Commands:
   checkout     NAME...     Create a mutable git repository for packages
   difflog      NAME        Show revision history with diffs
+  disk-usage               Show amount of disk used by locally tracked packages
   export       NAME...     Export packages
   gc                       Cleanup and optimize the local repository
-  disk-usage               Show amount of disk used by locally tracked packages
   help                     Show this help
   list-all                 List all known packages
   list-arches  NAME...     List architectures for packages
   list-local               List tracked packages
   list-repos   NAME...     List repos for packages
-  ls-files     NAME        List files for package
   log          NAME        Show revision history
+  ls-files     NAME        List files for package
   shortlog     NAME        Show revision history in short form
   show         NAME [FILE] Show the PKGBUILD or other FILE
-  update       [NAME...]   Update packages (update all tracked if none specified)
   untrack      NAME...     Remove a package from the local repository
+  update       [NAME...]   Update packages (update all tracked if none specified)
 EOF
 }
 
@@ -301,8 +301,8 @@ dispatch_action() {
     list-arches
     list-local
     list-repos
-    ls-files
     log
+    ls-files
     shortlog
     show
     untrack

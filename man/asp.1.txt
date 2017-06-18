@@ -34,6 +34,9 @@ The following commands are understood:
 *difflog* 'TARGET'::
 	Show the full revision history of the target, with file diffs.
 
+*disk-usage*::
+	Report the approximate disk usage for locally tracked packages.
+
 *export* 'TARGET'...::
 	Dump the build source files for each target into a directory of the
 	target's name in '$PWD'. Targets can be specified simply as 'package' to
@@ -44,9 +47,6 @@ The following commands are understood:
 *gc*::
 	Perform housekeeping procedures on the local repo, optimizing and
 	compacting the repo to free disk space.
-
-*disk-usage*::
-	Report the approximate disk usage for locally tracked packages.
 
 *help*::
 	Display the command line usage and exit.
@@ -63,11 +63,11 @@ The following commands are understood:
 *list-repos* 'TARGET'...::
 	List the repositories the given targets exist in.
 
-*ls-files* 'TARGET'::
-	List source files for the given target.
-
 *log* 'TARGET'::
 	Show the revision history of the target.
+
+*ls-files* 'TARGET'::
+	List source files for the given target.
 
 *shortlog* 'TARGET'::
 	Show a condensed revision history of the target.
@@ -79,16 +79,16 @@ The following commands are understood:
 	specified, the file will be shown at the most recent revision (which may be
 	newer than what is in the repositories).
 
+*untrack* 'TARGET'...::
+	Remove a remote tracking branch from the local repository. Disk usage for
+	the removed package(s) may not be freed until garbage collection has taken
+	place.
+
 *update* ['TARGET'...]::
 	For each target, if the package is not known to the local repository,
 	attempt to track it. If the package is tracked, update the package
 	to the newest version. If no targets are provided, all locally known
 	packages will be updated.
-
-*untrack* 'TARGET'...::
-	Remove a remote tracking branch from the local repository. Disk usage for
-	the removed package(s) may not be freed until garbage collection has taken
-	place.
 
 Options
 -------

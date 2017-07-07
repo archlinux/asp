@@ -14,6 +14,7 @@ package_resolve() {
   fi
 
   log_error 'unknown package: %s' "$pkgname"
+  return 1
 }
 
 package_init() {

@@ -181,7 +181,7 @@ package_get_repos_with_arch() {
   while read -r path; do
     IFS=/- read -r _ repo arch <<<"$path"
     printf '%s %s\n' "$repo" "$arch"
-  done < <(git ls-tree --name-only "$remote/packages/$pkgname" repos/)
+  done < <(git ls-tree --name-only "remotes/$remote/packages/$pkgname" repos/)
 }
 
 package_get_arches() {

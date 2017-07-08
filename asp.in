@@ -289,50 +289,34 @@ action__ls-files() {
 }
 
 dispatch_action() {
-  local a candidates=()
-  local actions=(
-    checkout
-    difflog
-    disk-usage
-    export
-    gc
-    help
-    list-all
-    list-arches
-    list-local
-    list-repos
-    log
-    ls-files
-    shortlog
-    show
-    untrack
-    update
-  )
+  local candidates
 
   [[ $1 ]] || log_fatal 'no action specified (use -h for help)'
 
-  for a in "${actions[@]}"; do
-    if [[ $a = "$1" ]]; then
-      candidates=("$a")
-      break
-    fi
+  # exact match
+  if declare -F "action__$1" &>/dev/null; then
+    "action__$@"
+    return
+  fi
 
-    [[ $a = "$1"* ]] && candidates+=("$a")
-  done
-
+  # prefix match
+  mapfile -t candidates < <(compgen -A function "action__$1")
   case ${#candidates[*]} in
     0)
       log_fatal 'unknown action: %s' "$1"
       ;;
     1)
-      "action__${candidates[0]}" "${@:2}"
+      "${candidates[0]}" "${@:2}"
+      return
       ;;
     *)
       {
         printf "error: verb '%s' is ambiguous; possibilities:" "$1"
-        printf " '%s'" "${candidates[@]}"
+        printf " '%s'" "${candidates[@]#action__}"
         echo
       } >&2
+      return 1
+      ;;
   esac
 }
 

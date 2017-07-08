@@ -25,23 +25,27 @@ Options:
   -h                       Show this help
   -V                       Show package version
 
-Commands:
-  checkout     NAME...     Create a mutable git repository for packages
-  difflog      NAME        Show revision history with diffs
-  disk-usage               Show amount of disk used by locally tracked packages
-  export       NAME...     Export packages
-  gc                       Cleanup and optimize the local repository
-  help                     Show this help
-  list-all                 List all known packages
-  list-arches  NAME...     List architectures for packages
-  list-local               List tracked packages
-  list-repos   NAME...     List repos for packages
-  log          NAME        Show revision history
-  ls-files     NAME        List files for package
-  shortlog     NAME        Show revision history in short form
-  show         NAME [FILE] Show the PKGBUILD or other FILE
-  untrack      NAME...     Remove a package from the local repository
-  update       [NAME...]   Update packages (update all tracked if none specified)
+Package Commands:
+  checkout           NAME...     Create a mutable git repository for packages
+  difflog            NAME        Show revision history with diffs
+  export             NAME...     Export packages
+  list-all                       List all known packages
+  list-arches        NAME...     List architectures for packages
+  list-local                     List tracked packages
+  list-repos         NAME...     List repos for packages
+  log                NAME        Show revision history
+  ls-files           NAME        List files for package
+  shortlog           NAME        Show revision history in short form
+  show               NAME [FILE] Show the PKGBUILD or other FILE
+  untrack            NAME...     Remove a package from the local repository
+  update             [NAME...]   Update packages (update all tracked if none specified)
+
+Meta Commands:
+  disk-usage                     Show amount of disk used by locally tracked packages
+  gc                             Cleanup and optimize the local repository
+  help                           Show this help
+  set-git-protocol   PROTO       Change git protocol (one of: git, http, https)
+
 EOF
 }
 
@@ -286,6 +290,22 @@ action__ls-files() {
   __require_argc 1 $#
 
   package_list_files "$1"
+}
+
+action__set-git-protocol() {
+  __require_argc 1 $#
+
+  case $1 in
+    git|http|https)
+      ;;
+    *)
+      log_fatal 'invalid protocol: %s' "$1"
+      ;;
+  esac
+
+  for remote in "${ARCH_GIT_REPOS[@]}"; do
+    git remote set-url "$remote" "$1://git.archlinux.org/svntogit/$remote.git"
+  done
 }
 
 dispatch_action() {

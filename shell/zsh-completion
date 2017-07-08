@@ -17,25 +17,26 @@ _asp_command() {
       'log'
       'shortlog'
       'show'
+      'set-git-protocol'
       'update'
       'untrack'
       )
 
-if (( CURRENT == 1 )); then
-  _describe -t commands 'asp command' _asp_cmds || compadd "$@"
-else
-  local curcontext="$curcontext"
-  cmd="${${_asp_cmds[(r)$words[1]:*]%%:*}}"
-  if (( $#cmd )); then
-    if (( $+functions[_asp_$cmd] )); then
-      _asp_$cmd
-    else
-      _message "no more options"
-    fi
+  if (( CURRENT == 1 )); then
+    _describe -t commands 'asp command' _asp_cmds || compadd "$@"
   else
-    _message "unknown asp command: $words[1]"
+    local curcontext="$curcontext"
+    cmd="${${_asp_cmds[(r)$words[1]:*]%%:*}}"
+    if (( $#cmd )); then
+      if (( $+functions[_asp_$cmd] )); then
+        _asp_$cmd
+      else
+        _message "no more options"
+      fi
+    else
+      _message "unknown asp command: $words[1]"
+    fi
   fi
-fi
 }
 
 _arguments \

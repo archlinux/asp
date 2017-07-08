@@ -17,6 +17,7 @@ _asp() {
     [ALL_PACKAGES]='checkout difflog export list-arches list-repos log shortlog show ls-files'
     [LOCAL_PACKAGES]='untrack update'
     [NONE]='disk-usage gc help list-all list-local'
+    [PROTO]='set-git-protocol'
   )
 
   # flags
@@ -44,6 +45,10 @@ _asp() {
     elif in_array "$word" ${verbs[LOCAL_PACKAGES]}; then
       verb=$word
       comps=$(ASP_GIT_QUIET=1 \asp list-local | sed 's,.*/,,')
+      break
+    elif in_array "$word" ${verbs[PROTO]}; then
+      verb=$word
+      comps='git http https'
       break
     elif in_array "$word" ${verbs[NONE]}; then
       verb=$word

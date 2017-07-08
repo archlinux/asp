@@ -69,6 +69,10 @@ The following commands are understood:
 *ls-files* 'TARGET'::
 	List source files for the given target.
 
+*set-git-protocol* 'PROTOCOL'::
+	Set the protocol used to communicate with the remote git repositories. Must
+	be one of 'git', 'http', or 'https'.
+
 *shortlog* 'TARGET'::
 	Show a condensed revision history of the target.
 

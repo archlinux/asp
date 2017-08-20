@@ -103,7 +103,7 @@ package_show_file() {
 }
 
 package_list_files() {
-  local remote
+  local remote subtree=trunk
   pkgname=$1
 
   if [[ $pkgname = */* ]]; then
@@ -114,8 +114,6 @@ package_list_files() {
 
   if [[ $repo ]]; then
     subtree=repos/$repo-$OPT_ARCH
-  else
-    subtree=trunk
   fi
 
 
@@ -124,7 +122,7 @@ package_list_files() {
 }
 
 package_export() {
-  local remote repo arch path
+  local remote repo arch path subtree=trunk
   pkgname=$1
 
   if [[ $pkgname = */* ]]; then
@@ -135,8 +133,6 @@ package_export() {
 
   if [[ $repo ]]; then
     subtree=repos/$repo-$OPT_ARCH
-  else
-    subtree=trunk
   fi
 
   if [[ -z $(git ls-tree "remotes/$remote/packages/$pkgname" "$subtree/") ]]; then

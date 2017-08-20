@@ -1,6 +1,6 @@
 PACKAGE_NAME = asp
 
-VERSION = v1
+VERSION = v2
 VDEVEL = $(shell test -d .git && git describe --dirty 2>/dev/null)
 
 ifneq "$(VDEVEL)" ""

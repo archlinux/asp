@@ -5,8 +5,14 @@ __remote_refcache_update() {
   trap "rm -f '$cachefile~'" RETURN
 
   git ls-remote "$remote" 'refs/heads/packages/*' |
-      awk '{ sub(/refs\/heads\//, "", $2); print $2 }' >"$cachefile~" &&
-          mv "$cachefile"{~,}
+      awk '{ sub(/refs\/heads\//, "", $2); print $2 }' >"$cachefile~"
+
+  if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+    rm -f "$cachefile~"
+    log_fatal 'Was not able to update remote-%s' "$remote"
+  fi
+
+  mv "$cachefile"{~,}
 }
 
 __remote_refcache_get() {

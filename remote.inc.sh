@@ -1,12 +1,11 @@
 __remote_refcache_update() {
-  local remote=$1 cachefile=$ASPCACHE/remote-$remote
+  local remote=$1 cachefile=$ASPCACHE/remote-$remote refs
 
-  # shellcheck disable=SC2064
-  trap "rm -f '$cachefile~'" RETURN
+  refs=$(git ls-remote "$remote" 'refs/heads/packages/*') ||
+      log_fatal "failed to update remote $remote"
 
-  git ls-remote "$remote" 'refs/heads/packages/*' |
-      awk '{ sub(/refs\/heads\//, "", $2); print $2 }' >"$cachefile~" &&
-          mv "$cachefile"{~,}
+  printf '%s' "$refs" |
+      awk '{ sub(/refs\/heads\//, "", $2); print $2 }' >"$cachefile"
 }
 
 __remote_refcache_get() {

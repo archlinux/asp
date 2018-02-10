@@ -91,7 +91,7 @@ update_local_branches() {
 
   while read -r branchname; do
     git branch -qf "$branchname" "refs/remotes/$branchname" || r=1
-  done < <(git branch)
+  done < <(git branch --no-color)
 
   return "$r"
 }

@@ -1,5 +1,5 @@
 log_meta() {
-  printf "$1 $2\n" "${@:3}"
+  printf "$1 $2\\n" "${@:3}"
 }
 
 log_error() {
@@ -38,9 +38,7 @@ in_array() {
 }
 
 quiet_git() {
-  local q
+  [[ $ASP_GIT_QUIET ]] && set -- "$1" -q "${@:2}"
 
-  [[ $ASP_GIT_QUIET ]] && q=('-q')
-
-  command git "$1" "${q[@]}" "${@:2}"
+  command git "$@"
 }

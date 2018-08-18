@@ -126,27 +126,23 @@ initialize() {
   local remote
 
   umask 0022
-  startdir=$PWD
 
-  if [[ ! -d $ASPROOT ]]; then
-    log_info 'Initializing ASPROOT in %s' "$ASPROOT"
-    mkdir -p "$ASPROOT"
+  export GIT_DIR=$ASPROOT/.git
+
+  if [[ ! -f $ASPROOT/.asp ]]; then
+    git init -q "$ASPROOT" || return 1
+    for remote in "${ARCH_GIT_REPOS[@]}"; do
+      git remote add "$remote" "https://git.archlinux.org/svntogit/$remote.git" || return 1
+    done
+
+    touch "$ASPROOT/.asp" || return 1
   fi
 
-  cd "$ASPROOT" || log_fatal "ASPROOT (%s) does not exist!" "$ASPROOT"
-
-  if [[ ! -d $ASPCACHE ]] && ! mkdir -p "$ASPCACHE"; then
-    log_fatal 'failed to create ASPCACHE (%s)' "$ASPCACHE"
+  if [[ ! -d $ASPCACHE ]]; then
+    mkdir -p "$ASPCACHE" || return 1
   fi
 
-  [[ -f .asp ]] && return 0
-
-  git init -q || return 1
-  for remote in "${ARCH_GIT_REPOS[@]}"; do
-    git remote add "$remote" "https://git.archlinux.org/svntogit/$remote.git"
-  done
-
-  touch .asp
+  return 0
 }
 
 dump_packages() {
@@ -340,7 +336,7 @@ dispatch_action() {
   esac
 }
 
-initialize
+initialize || log_fatal 'failed to initialize asp repository in %s' "$ASPROOT"
 
 while getopts ':a:fhV' flag; do
   case $flag in

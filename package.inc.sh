@@ -147,12 +147,12 @@ package_export() {
 
   if (( ! OPT_FORCE )); then
     # shellcheck disable=SC2154
-    mkdir "$startdir/$pkgname" || return
+    mkdir "$pkgname" || return
   fi
 
   log_info 'exporting %s:%s' "$pkgname" "$subtree"
   git archive --format=tar "remotes/$remote/packages/$pkgname" "$subtree/" |
-      tar -C "$startdir" --transform "s,^$subtree,$pkgname," -xf - "$subtree/"
+      tar --transform "s,^$subtree,$pkgname," -xf - "$subtree/"
 }
 
 package_checkout() {
@@ -165,9 +165,9 @@ package_checkout() {
       git branch -qf --no-track {,}"$remote/packages/$pkgname"
 
   quiet_git clone "$ASPROOT" --single-branch --branch "$remote/packages/$pkgname" \
-    "$startdir/$pkgname" || return
+    "$pkgname" || return
 
-  git --git-dir="$startdir/$pkgname/.git" config pull.rebase true
+  git --git-dir="$pkgname/.git" config pull.rebase true
 }
 
 package_get_repos_with_arch() {

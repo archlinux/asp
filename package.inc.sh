@@ -164,10 +164,12 @@ package_checkout() {
   git show-ref -q "refs/heads/$remote/packages/$pkgname" ||
       git branch -qf --no-track {,}"$remote/packages/$pkgname"
 
-  quiet_git clone "$ASPROOT" --single-branch --branch "$remote/packages/$pkgname" \
-    "$pkgname" || return
-
-  git --git-dir="$pkgname/.git" config pull.rebase true
+  quiet_git clone \
+    --local \
+    --single-branch \
+    --branch "$remote/packages/$pkgname" \
+    --config "pull.rebase=true" \
+    "$ASPROOT" "$pkgname" || return
 }
 
 package_get_repos_with_arch() {

@@ -165,7 +165,7 @@ package_checkout() {
       git branch -qf --no-track {,}"$remote/packages/$pkgname"
 
   quiet_git clone \
-    --local \
+    --shared \
     --single-branch \
     --branch "$remote/packages/$pkgname" \
     --config "pull.rebase=true" \

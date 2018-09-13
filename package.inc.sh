@@ -156,7 +156,7 @@ package_export() {
 }
 
 package_checkout() {
-  local remote clone_args
+  local remote
   pkgname=$1
 
   package_init "$pkgname" remote || return
@@ -164,20 +164,12 @@ package_checkout() {
   git show-ref -q "refs/heads/$remote/packages/$pkgname" ||
       git branch -qf --no-track {,}"$remote/packages/$pkgname"
 
-  clone_args=(
-    --local
-    --single-branch
-    --branch "$remote/packages/$pkgname"
-    --config "pull.rebase=true"
-  )
-
-  # If the current directory isn't on the same FS as us, then we can't use
-  # hardlinks in the clone, implied by --local.
-  if [[ $(stat -c %d "$ASPROOT") != "$(stat -c %d .)" ]] ; then
-    clone_args+=(--no-hardlinks)
-  fi
-
-  quiet_git clone "${clone_args[@]}" "$ASPROOT" "$pkgname"
+  quiet_git clone \
+    --local \
+    --single-branch \
+    --branch "$remote/packages/$pkgname" \
+    --config "pull.rebase=true" \
+    "$ASPROOT" "$pkgname" || return
 }
 
 package_get_repos_with_arch() {

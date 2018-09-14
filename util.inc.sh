@@ -1,4 +1,5 @@
 log_meta() {
+  # shellcheck disable=SC2059
   printf "$1 $2\\n" "${@:3}"
 }
 

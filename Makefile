@@ -1,6 +1,6 @@
 PACKAGE_NAME = asp
 
-VERSION = $(shell git describe --dirty 2>/dev/null)
+VERSION := $(shell git describe --dirty 2>/dev/null)
 
 PREFIX = /usr/local
 
@@ -35,7 +35,8 @@ edit = $(V_GEN) m4 -P $@.in | sed 's/@ASP_VERSION@/$(VERSION)/' >$@ && chmod go-
 
 doc: $(MANPAGES)
 man/%: man/%.txt Makefile
-	$(V_GEN) a2x -d manpage \
+	$(V_GEN) a2x \
+		-d manpage \
 		-f manpage \
 		-a manversion="$(PACKAGE_NAME) $(VERSION)" \
 		-a manmanual="$(PACKAGE_NAME) manual" $<
@@ -52,9 +53,5 @@ install: all
 	install -m644 $(MANPAGES) $(DESTDIR)$(PREFIX)/share/man/man1
 	install -Dm644 $(BASH_COMPLETION) $(DESTDIR)$(PREFIX)/share/bash-completion/completions/asp
 	install -Dm644 $(ZSH_COMPLETION) $(DESTDIR)$(PREFIX)/share/zsh/site-functions/_asp
-
-dist:
-	git archive --format=tar --prefix=$(PACKAGE_NAME)-$(VERSION)/ $(VERSION) | gzip -9 > $(PACKAGE_NAME)-$(VERSION).tar.gz
-	gpg --detach-sign --use-agent $(PACKAGE_NAME)-$(VERSION).tar.gz
 
 .PHONY: all clean install uninstall dist

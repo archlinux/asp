@@ -156,7 +156,7 @@ dump_packages() {
       dumpfn=remote_get_tracked_refs
       ;;
     *)
-      die 'internal error: invalid dump type: "%s"' "$1"
+      log_fatal 'BUG: invalid dump type: "%s"' "$1"
       ;;
   esac
 

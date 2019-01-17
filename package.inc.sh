@@ -74,7 +74,7 @@ package_log() {
       logargs=()
       ;;
     *)
-      die 'internal error: unknown log method: %s' "$method"
+      log_fatal 'BUG: unknown log method: %s' "$method"
       ;;
   esac
 
@@ -177,7 +177,9 @@ package_get_repos_with_arch() {
   pkgname=$1
 
   while read -r path; do
-    IFS=/- read -r _ repo arch <<<"$path"
+    path=${path##*/}
+    repo=${path%-*}
+    arch=${path##*-}
     printf '%s %s\n' "$repo" "$arch"
   done < <(git ls-tree --name-only "remotes/$remote/packages/$pkgname" repos/)
 }

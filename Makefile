@@ -54,4 +54,4 @@ install: all
 	install -Dm644 $(BASH_COMPLETION) $(DESTDIR)$(PREFIX)/share/bash-completion/completions/asp
 	install -Dm644 $(ZSH_COMPLETION) $(DESTDIR)$(PREFIX)/share/zsh/site-functions/_asp
 
-.PHONY: all clean install uninstall dist
+.PHONY: all clean install

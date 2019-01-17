@@ -135,7 +135,7 @@ package_export() {
     subtree=repos/$repo-$OPT_ARCH
   fi
 
-  if [[ -z $(git ls-tree "remotes/$remote/packages/$pkgname" "$subtree/") ]]; then
+  if ! git ls-tree "remotes/$remote/packages/$pkgname" "$subtree/" &>/dev/null; then
     if [[ $repo ]]; then
       log_error "package '%s' not found in repo '%s-%s'" "$pkgname" "$repo" "$OPT_ARCH"
       return 1

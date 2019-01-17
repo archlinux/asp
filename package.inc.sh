@@ -74,7 +74,7 @@ package_log() {
       logargs=()
       ;;
     *)
-      die 'internal error: unknown log method: %s' "$method"
+      log_fatal 'BUG: unknown log method: %s' "$method"
       ;;
   esac
 

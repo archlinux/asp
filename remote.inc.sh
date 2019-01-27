@@ -8,13 +8,31 @@ __remote_refcache_update() {
       awk '{ sub(/refs\/heads\//, "", $2); print $2 }' >"$cachefile"
 }
 
-__remote_refcache_get() {
-  local remote=$1 ttl=3600 now cachetime cachefile=$ASPCACHE/remote-$remote
+__remote_refcache_is_stale() {
+  local now cachetime cachefile=$1 ttl=3600
 
   printf -v now '%(%s)T' -1
 
+  # The cache is stale if we've exceeded the TTL.
   if ! cachetime=$(stat -c %Y "$cachefile" 2>/dev/null) ||
       (( now > (cachetime + ttl) )); then
+    return 0
+  fi
+
+  # We also consider the cache to be stale when this script is newer than the
+  # cache. This allows upgrades to asp to implicitly wipe the cache and not
+  # make any guarantees about the file format.
+  if (( $(stat -c %Y "${BASH_SOURCE[0]}" 2>/dev/null) > cachetime )); then
+    return 0
+  fi
+
+  return 1
+}
+
+__remote_refcache_get() {
+  local remote=$1 cachefile=$ASPCACHE/remote-$remote
+
+  if __remote_refcache_is_stale "$cachefile"; then
     __remote_refcache_update "$remote"
   fi
 

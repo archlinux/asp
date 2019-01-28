@@ -5,7 +5,7 @@ __remote_refcache_update() {
       log_fatal "failed to update remote $remote"
 
   printf '%s' "$refs" |
-      awk '{ sub(/refs\/heads\//, "", $2); print $2 }' >"$cachefile"
+      awk '{ sub(/refs\/heads\/packages\//, "", $2); print $2 }' >"$cachefile"
 }
 
 __remote_refcache_is_stale() {
@@ -50,7 +50,7 @@ remote_has_package() {
 
   remote_get_all_refs "$remote" refs
 
-  in_array "packages/$pkgname" "${refs[@]}"
+  in_array "$pkgname" "${refs[@]}"
 }
 
 remote_is_tracking() {

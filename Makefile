@@ -44,6 +44,9 @@ man/%: man/%.txt Makefile
 check: $(BINPROGS)
 	@for f in $(BINPROGS); do bash -O extglob -n $$f; done
 
+lint: $(BINPROGS)
+	@for f in $(BINPROGS); do shellcheck $$f; done
+
 clean:
 	$(RM) $(BINPROGS) $(MANPAGES)
 

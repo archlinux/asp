@@ -336,6 +336,17 @@ dispatch_action() {
 
 initialize || log_fatal 'failed to initialize asp repository in %s' "$ASPROOT"
 
+case $1 in
+  --version)
+    version
+    exit 0
+    ;;
+  --help)
+    usage
+    exit 0
+    ;;
+esac
+
 while getopts ':a:hV' flag; do
   case $flag in
     a)

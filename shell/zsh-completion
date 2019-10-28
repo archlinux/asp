@@ -41,7 +41,6 @@ _asp_command() {
 
 _arguments \
   '-a[architecture]' \
-  '-f[overwrite files]' \
   '-h[print help and exit]' \
   '-V[print version and exit]' \
   '*::asp command:_asp_command'

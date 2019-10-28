@@ -99,9 +99,6 @@ Options
 *-a* 'architecture'::
 	When relevant, specify an architecture other than that of the current host.
 
-*-f*::
-	Allow files to be overwritten.
-
 *-h*::
 	Print a short help text and exit.
 

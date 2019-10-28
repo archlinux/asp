@@ -23,7 +23,7 @@ _asp() {
   # flags
   local -A opts=(
     [UNKNOWN]='-a'
-    [NONE]='-f -h -V'
+    [NONE]='-h -V'
   )
 
   if in_array "$prev" ${opts[UNKNOWN]}; then

@@ -4,7 +4,6 @@ ASP_VERSION=@ASP_VERSION@
 ARCH_GIT_REPOS=(packages community)
 
 OPT_ARCH=$(uname -m)
-OPT_FORCE=0
 : "${ASPROOT:=${XDG_CACHE_HOME:-$HOME/.cache}/asp}"
 : "${ASPCACHE:=$ASPROOT/cache}"
 
@@ -21,7 +20,6 @@ Manage build sources for Arch packages.
 
 Options:
   -a           ARCH        Specify an architecture other than the host's
-  -f                       Allow files to be overwritten
   -h                       Show this help
   -V                       Show package version
 
@@ -338,13 +336,10 @@ dispatch_action() {
 
 initialize || log_fatal 'failed to initialize asp repository in %s' "$ASPROOT"
 
-while getopts ':a:fhV' flag; do
+while getopts ':a:hV' flag; do
   case $flag in
     a)
       OPT_ARCH=$OPTARG
-      ;;
-    f)
-      OPT_FORCE=1
       ;;
     h)
       usage

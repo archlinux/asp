@@ -145,10 +145,7 @@ package_export() {
     fi
   fi
 
-  if (( ! OPT_FORCE )); then
-    # shellcheck disable=SC2154
-    mkdir "$pkgname" || return
-  fi
+  mkdir "$pkgname" || return
 
   log_info 'exporting %s:%s' "$pkgname" "$subtree"
   git archive --format=tar "remotes/$remote/packages/$pkgname" "$subtree/" |

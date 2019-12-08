@@ -122,7 +122,7 @@ package_list_files() {
 }
 
 package_export() {
-  local remote repo arch path subtree=trunk
+  local remote repo arch=$OPT_ARCH arches subtree=trunk
   pkgname=$1
 
   if [[ $pkgname = */* ]]; then
@@ -132,7 +132,11 @@ package_export() {
   package_init "$pkgname" remote || return
 
   if [[ $repo ]]; then
-    subtree=repos/$repo-$OPT_ARCH
+    mapfile -t arches < <(package_get_arches "$pkgname")
+    if (( ${#arches[*]} == 1 )) && [[ ${arches[0]} = any ]]; then
+      arch=any
+    fi
+    subtree=repos/$repo-$arch
   fi
 
   if ! git show "remotes/$remote/packages/$pkgname:$subtree/" &>/dev/null; then

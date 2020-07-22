@@ -121,7 +121,7 @@ update_packages() {
 }
 
 initialize() {
-  local remote
+  local remote url
 
   umask 0022
 
@@ -130,10 +130,18 @@ initialize() {
   if [[ ! -f $ASPROOT/.asp ]]; then
     git init -q "$ASPROOT" || return 1
     for remote in "${ARCH_GIT_REPOS[@]}"; do
-      git remote add "$remote" "https://git.archlinux.org/svntogit/$remote.git" || return 1
+      git remote add "$remote" "https://github.com/archlinux/svntogit-$remote.git" || return 1
     done
 
     touch "$ASPROOT/.asp" || return 1
+  else
+    # migrate from git.archlinux.org to github.com
+    for remote in "${ARCH_GIT_REPOS[@]}"; do
+      url=$(git remote get-url "$remote")
+      if [[ $url = *'git.archlinux.org'* ]]; then
+        git remote set-url "$remote" "${url%%:*}://github.com/archlinux/svntogit-$remote.git"
+      fi
+    done
   fi
 
   if [[ ! -d $ASPCACHE ]]; then
@@ -298,7 +306,7 @@ action__set-git-protocol() {
   esac
 
   for remote in "${ARCH_GIT_REPOS[@]}"; do
-    git remote set-url "$remote" "$1://git.archlinux.org/svntogit/$remote.git"
+    git remote set-url "$remote" "$1://github.com/archlinux/svntogit-$remote.git"
   done
 }
 

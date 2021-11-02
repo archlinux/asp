@@ -138,8 +138,9 @@ initialize() {
     # migrate from git.archlinux.org to github.com
     for remote in "${ARCH_GIT_REPOS[@]}"; do
       url=$(git remote get-url "$remote")
-      if [[ $url = *'git.archlinux.org'* ]]; then
-        git remote set-url "$remote" "${url%%:*}://github.com/archlinux/svntogit-$remote.git"
+      # https://github.blog/2021-09-01-improving-git-protocol-security-github/
+      if [[ $url = *'git.archlinux.org'* ]] || [[ $url = *'git://github.com'* ]]; then
+        git remote set-url "$remote" "https://github.com/archlinux/svntogit-$remote.git"
       fi
     done
   fi

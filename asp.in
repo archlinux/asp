@@ -97,6 +97,7 @@ update_local_branches() {
 update_remote_branches() {
   local refspecs=() remote pkgname
   declare -A refspec_map
+  declare -A remote_map
 
   if (( $# == 0 )); then
     update_all
@@ -107,12 +108,19 @@ update_remote_branches() {
   for pkgname; do
     package_init -n "$pkgname" remote || return 1
     refspec_map["$remote"]+=" packages/$pkgname"
+    remote_map["$pkgname"]="$remote"
   done
 
   # update each remote all at once
   for remote in "${!refspec_map[@]}"; do
     read -ra refspecs <<<"${refspec_map["$remote"]}"
     remote_update_refs "$remote" "${refspecs[@]}"
+  done
+
+  # ensure local branches exist for packages we are updating (#35)
+  for pkgname; do
+    git show-ref -q "refs/heads/$remote/packages/$pkgname" ||
+        git branch -qf --no-track {,}"$remote/packages/$pkgname"
   done
 }
 

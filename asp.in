@@ -24,19 +24,19 @@ Options:
   -V                       Show package version
 
 Package Commands:
-  checkout           NAME...     Create a mutable git repository for packages
-  difflog            NAME        Show revision history with diffs
-  export             NAME...     Export packages
-  list-all                       List all known packages
-  list-arches        NAME...     List architectures for packages
-  list-local                     List tracked packages
-  list-repos         NAME...     List repos for packages
-  log                NAME        Show revision history
-  ls-files           NAME        List files for package
-  shortlog           NAME        Show revision history in short form
-  show               NAME [FILE] Show the PKGBUILD or other FILE
-  untrack            NAME...     Remove a package from the local repository
-  update             [NAME...]   Update packages (update all tracked if none specified)
+  checkout           [-u] NAME... Create a mutable git repository for packages
+  difflog            NAME         Show revision history with diffs
+  export             NAME...      Export packages
+  list-all                        List all known packages
+  list-arches        NAME...      List architectures for packages
+  list-local                      List tracked packages
+  list-repos         NAME...      List repos for packages
+  log                NAME         Show revision history
+  ls-files           NAME         List files for package
+  shortlog           NAME         Show revision history in short form
+  show               NAME [FILE]  Show the PKGBUILD or other FILE
+  untrack            NAME...      Remove a package from the local repository
+  update             [NAME...]    Update packages (update all tracked if none specified)
 
 Meta Commands:
   disk-usage                     Show amount of disk used by locally tracked packages
@@ -216,7 +216,24 @@ disk_usage() {
 }
 
 action__checkout() {
+  local update=0
+  while getopts ':u' flag; do
+    case $flag in
+      u)
+        update=1
+        ;;
+      \?)
+        log_fatal "Invalid option -- '%s'" "$OPTARG"
+        ;;
+    esac
+  done
+  shift $(( OPTIND - 1 ))
+
   __require_argc 1- $#
+
+  if (( update )); then
+    update_packages "$@"
+  fi
   map package_checkout "$@"
 }
 

@@ -1,5 +1,69 @@
 #compdef asp
 
+_asp_remote_target() {
+  local asp_root=${ASPROOT:-${XDG_CACHE_HOME:-$HOME/.cache}/asp}
+  local asp_cache=${ASPCACHE:-${asp_root}/cache}
+  subcmds=(${(@f)$(< $asp_cache/remote-packages < $asp_cache/remote-community)})
+  _describe 'target' subcmds
+}
+
+_asp_local_target() {
+  subcmds=(${(@f)$(asp list-local)})
+  _describe 'target' subcmds
+}
+
+_end_of_options() {
+  _message "no more options"
+}
+
+_asp_log() {
+  _arguments '1: :_asp_remote_target' '*: :_end_of_options'
+}
+
+_asp_difflog() {
+  _asp_log
+}
+
+_asp_shortlog() {
+  _asp_log
+}
+
+_asp_checkout() {
+  _asp_remote_target
+}
+
+_asp_export() {
+  _asp_remote_target
+}
+
+_asp_list-arches() {
+  _asp_remote_target
+}
+
+_asp_list-repos() {
+  _asp_remote_target
+}
+
+_asp_ls-files() {
+  _asp_remote_target
+}
+
+_asp_set-git-protocol() {
+  _arguments '1: :_values protocol git http https' '*: :_end_of_options'
+}
+
+_asp_show() {
+  _arguments '1: :_asp_remote_target' '2:FILE:'
+}
+
+_asp_untrack() {
+  _asp_local_target
+}
+
+_asp_update() {
+  _asp_remote_target
+}
+
 _asp_command() {
   local -a _asp_cmds
   _asp_cmds=(
@@ -26,13 +90,9 @@ _asp_command() {
     _describe -t commands 'asp command' _asp_cmds || compadd "$@"
   else
     local curcontext="$curcontext"
-    cmd="${${_asp_cmds[(r)$words[1]:*]%%:*}}"
+    cmd="${${_asp_cmds[(r)$words[1]]}}"
     if (( $#cmd )); then
-      if (( $+functions[_asp_$cmd] )); then
-        _asp_$cmd
-      else
-        _message "no more options"
-      fi
+       _call_function ret _asp_$cmd || _end_of_options
     else
       _message "unknown asp command: $words[1]"
     fi

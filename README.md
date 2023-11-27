@@ -1,3 +1,12 @@
+> [!CAUTION]
+> **THIS REPO IS ARCHIVED**
+> 
+> In the context of the [git migration](https://archlinux.org/news/git-migration-announcement/) using `asp` has been deprecated in favor of `pkgctl` or plain `git`.
+> 
+> For details see the respective wiki entry: https://wiki.archlinux.org/title/Arch_build_system#Retrieve_PKGBUILD_source
+
+---
+
 # asp
 
 `asp` is a tool to manage the build source files used to create Arch Linux
